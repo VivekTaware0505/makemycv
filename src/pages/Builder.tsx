@@ -1,9 +1,10 @@
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Layout, LayoutTemplate } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResumeData, defaultResumeData } from "@/types/resume";
+import { TemplateId, templates } from "@/types/templates";
 import { calculateATSScore } from "@/lib/ats";
 import ResumeForm from "@/components/builder/ResumeForm";
 import ResumePreview from "@/components/builder/ResumePreview";
@@ -12,8 +13,11 @@ import PaymentModal from "@/components/builder/PaymentModal";
 
 const Builder = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialTemplate = (searchParams.get("template") as TemplateId) || "classic";
+
   const [data, setData] = useState<ResumeData>(defaultResumeData);
-  const [template, setTemplate] = useState<"classic" | "modern">("classic");
+  const [template, setTemplate] = useState<TemplateId>(initialTemplate);
 
   const { score, suggestions } = useMemo(() => calculateATSScore(data), [data]);
 
@@ -34,7 +38,6 @@ const Builder = () => {
         .from(element)
         .save();
     } else {
-      // Word export: create simple HTML-based .doc
       const htmlContent = `
         <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
         <head><meta charset="utf-8"><title>Resume</title></head>
@@ -50,35 +53,43 @@ const Builder = () => {
     }
   };
 
+  const currentTemplate = templates.find((t) => t.id === template);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="h-16 border-b border-border bg-background/80 backdrop-blur-lg flex items-center px-6 gap-4 sticky top-0 z-30">
+      <div className="h-16 border-b border-border bg-background/80 backdrop-blur-lg flex items-center px-4 md:px-6 gap-3 sticky top-0 z-30">
         <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="gap-2 text-muted-foreground hover:text-foreground">
           <ArrowLeft className="w-4 h-4" />
-          Back
+          <span className="hidden sm:inline">Back</span>
         </Button>
         <div className="flex-1 text-center">
           <span className="text-sm font-semibold text-foreground">Resume Builder</span>
         </div>
-        <div className="flex items-center gap-2">
+
+        {/* Template selector */}
+        <div className="flex items-center gap-1.5 overflow-x-auto max-w-[50%]">
+          {templates.slice(0, 6).map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTemplate(t.id)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all border ${
+                template === t.id
+                  ? "border-foreground bg-primary text-primary-foreground"
+                  : "border-border bg-card text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: t.accentColor }} />
+              <span className="hidden md:inline">{t.name.split(' ')[0]}</span>
+            </button>
+          ))}
           <Button
-            variant={template === "classic" ? "default" : "outline"}
+            variant="ghost"
             size="sm"
-            className="h-8 text-xs gap-1.5"
-            onClick={() => setTemplate("classic")}
+            className="text-xs text-muted-foreground whitespace-nowrap"
+            onClick={() => navigate("/templates")}
           >
-            <Layout className="w-3 h-3" />
-            Classic
-          </Button>
-          <Button
-            variant={template === "modern" ? "default" : "outline"}
-            size="sm"
-            className="h-8 text-xs gap-1.5"
-            onClick={() => setTemplate("modern")}
-          >
-            <LayoutTemplate className="w-3 h-3" />
-            Modern
+            All →
           </Button>
         </div>
       </div>
@@ -93,9 +104,19 @@ const Builder = () => {
         {/* Right: Preview + ATS + Download */}
         <div className="w-full lg:w-[55%] bg-secondary/30">
           <div className="p-6 space-y-4 max-h-[calc(100vh-4rem)] overflow-y-auto">
+            {currentTemplate && (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border text-xs text-muted-foreground">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ background: currentTemplate.accentColor }} />
+                <span className="font-medium text-foreground">{currentTemplate.name}</span>
+                <span>·</span>
+                <span>{currentTemplate.description}</span>
+              </div>
+            )}
+
             <ATSScore score={score} suggestions={suggestions} />
 
             <motion.div
+              key={template}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               className="rounded-xl border border-border overflow-hidden shadow-card"
