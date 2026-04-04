@@ -6,18 +6,10 @@ import { ResumeData } from "@/types/resume";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
-
 interface Props {
   data: ResumeData;
   onDownload: (format: "pdf" | "word") => void;
 }
-
-const CASHFREE_APP_ID = "124826716f628950481443ae1857628421";
 
 const PRICES = { pdf: 9, word: 20 };
 
@@ -33,68 +25,61 @@ const PaymentModal = ({ data, onDownload }: Props) => {
 
     try {
       // Create order via edge function
-      const { data: orderData, error } = await supabase.functions.invoke("razorpay", {
-        body: { action: "create_order", amount: PRICES[format], currency: "INR" },
+      const { data: orderData, error } = await supabase.functions.invoke("cashfree-payment", {
+        body: {
+          action: "create_order",
+          amount: PRICES[format],
+          customer_name: data.name || "Customer",
+          customer_email: data.email || "customer@example.com",
+          customer_phone: data.phone || "9999999999",
+        },
       });
 
-      if (error || !orderData?.order_id) {
-        throw new Error(error?.message || "Failed to create order");
+      if (error || !orderData?.payment_session_id) {
+        throw new Error(error?.message || orderData?.error || "Failed to create order");
       }
 
-      // Open Razorpay checkout
-      const options = {
-        key: RAZORPAY_KEY_ID,
-        amount: orderData.amount,
-        currency: orderData.currency,
-        name: "CV.com",
-        description: `${format.toUpperCase()} Resume Download`,
-        order_id: orderData.order_id,
-        handler: async (response: any) => {
+      // Load Cashfree SDK and open checkout
+      const cashfree = (window as any).Cashfree;
+      if (!cashfree) {
+        throw new Error("Payment SDK not loaded. Please refresh and try again.");
+      }
+
+      const cf = cashfree({ mode: "production" });
+      
+      cf.checkout({
+        paymentSessionId: orderData.payment_session_id,
+        redirectTarget: "_modal",
+      }).then(async (result: any) => {
+        if (result.error) {
+          toast.error(result.error.message || "Payment failed");
+          setLoading(false);
+          return;
+        }
+        if (result.paymentDetails?.paymentMessage === "Payment finished") {
           // Verify payment
-          const { data: verifyData, error: verifyError } = await supabase.functions.invoke("razorpay", {
+          const { data: verifyData } = await supabase.functions.invoke("cashfree-payment", {
             body: {
               action: "verify_payment",
-              order_id: response.razorpay_order_id,
-              payment_id: response.razorpay_payment_id,
-              signature: response.razorpay_signature,
+              order_id: orderData.order_id,
             },
           });
 
-          if (verifyError || !verifyData?.verified) {
+          if (verifyData?.verified) {
+            setLoading(false);
+            setSuccess(true);
+            setTimeout(() => {
+              onDownload(format);
+              toast.success(`${format.toUpperCase()} downloaded successfully!`);
+              setSuccess(false);
+              setOpen(false);
+            }, 1500);
+          } else {
             toast.error("Payment verification failed. Please contact support.");
             setLoading(false);
-            return;
           }
-
-          setLoading(false);
-          setSuccess(true);
-          setTimeout(() => {
-            onDownload(format);
-            toast.success(`${format.toUpperCase()} downloaded successfully!`);
-            setSuccess(false);
-            setOpen(false);
-          }, 1500);
-        },
-        modal: {
-          ondismiss: () => {
-            setLoading(false);
-            setSelectedFormat(null);
-          },
-        },
-        prefill: {
-          name: data.name || "",
-          email: data.email || "",
-          contact: data.phone || "",
-        },
-        theme: { color: "#000000" },
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", (response: any) => {
-        toast.error(response.error?.description || "Payment failed");
-        setLoading(false);
+        }
       });
-      rzp.open();
     } catch (err: any) {
       toast.error(err.message || "Something went wrong");
       setLoading(false);
@@ -185,7 +170,7 @@ const PaymentModal = ({ data, onDownload }: Props) => {
                   </div>
 
                   <p className="text-xs text-muted-foreground text-center mt-4">
-                    Secure payment via Razorpay 🔒
+                    Secure payment via Cashfree 🔒
                   </p>
                 </>
               )}
