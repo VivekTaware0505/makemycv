@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Github, Linkedin, Twitter, Mail, Heart } from "lucide-react";
+import founderPhoto from "@/assets/founder.webp";
 
 const Footer = () => {
   const navigate = useNavigate();
