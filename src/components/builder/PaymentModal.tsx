@@ -4,11 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Download, FileText, FileIcon, CheckCircle, Loader2, X } from "lucide-react";
 import { ResumeData } from "@/types/resume";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 interface Props {
   data: ResumeData;
   onDownload: (format: "pdf" | "word") => void;
 }
+
+const RAZORPAY_KEY_ID = "124826716f628950481443ae1857628421";
+
+const PRICES = { pdf: 9, word: 20 };
 
 const PaymentModal = ({ data, onDownload }: Props) => {
   const [open, setOpen] = useState(false);
@@ -20,18 +31,74 @@ const PaymentModal = ({ data, onDownload }: Props) => {
     setSelectedFormat(format);
     setLoading(true);
 
-    // Simulate Razorpay payment (in production, integrate real Razorpay)
-    await new Promise((r) => setTimeout(r, 2000));
+    try {
+      // Create order via edge function
+      const { data: orderData, error } = await supabase.functions.invoke("razorpay", {
+        body: { action: "create_order", amount: PRICES[format], currency: "INR" },
+      });
 
-    setLoading(false);
-    setSuccess(true);
+      if (error || !orderData?.order_id) {
+        throw new Error(error?.message || "Failed to create order");
+      }
 
-    setTimeout(() => {
-      onDownload(format);
-      toast.success(`${format.toUpperCase()} downloaded successfully!`);
-      setSuccess(false);
-      setOpen(false);
-    }, 1500);
+      // Open Razorpay checkout
+      const options = {
+        key: RAZORPAY_KEY_ID,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "CV.com",
+        description: `${format.toUpperCase()} Resume Download`,
+        order_id: orderData.order_id,
+        handler: async (response: any) => {
+          // Verify payment
+          const { data: verifyData, error: verifyError } = await supabase.functions.invoke("razorpay", {
+            body: {
+              action: "verify_payment",
+              order_id: response.razorpay_order_id,
+              payment_id: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+            },
+          });
+
+          if (verifyError || !verifyData?.verified) {
+            toast.error("Payment verification failed. Please contact support.");
+            setLoading(false);
+            return;
+          }
+
+          setLoading(false);
+          setSuccess(true);
+          setTimeout(() => {
+            onDownload(format);
+            toast.success(`${format.toUpperCase()} downloaded successfully!`);
+            setSuccess(false);
+            setOpen(false);
+          }, 1500);
+        },
+        modal: {
+          ondismiss: () => {
+            setLoading(false);
+            setSelectedFormat(null);
+          },
+        },
+        prefill: {
+          name: data.name || "",
+          email: data.email || "",
+          contact: data.phone || "",
+        },
+        theme: { color: "#000000" },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", (response: any) => {
+        toast.error(response.error?.description || "Payment failed");
+        setLoading(false);
+      });
+      rzp.open();
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong");
+      setLoading(false);
+    }
   };
 
   return (
