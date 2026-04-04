@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Github, Linkedin, Twitter, Mail, Heart } from "lucide-react";
+import founderPhoto from "@/assets/founder.webp";
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -23,9 +24,7 @@ const Footer = () => {
                 Founded by
               </p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm" style={{ background: 'rgba(255,255,255,0.1)', color: 'hsl(var(--primary-foreground))' }}>
-                  VT
-                </div>
+                <img src={founderPhoto} alt="Mr. Vivek Taware" className="w-10 h-10 rounded-full object-cover" />
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'hsl(var(--primary-foreground))' }}>Mr. Vivek Taware</p>
                   <p className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>Making job hunting easier</p>
