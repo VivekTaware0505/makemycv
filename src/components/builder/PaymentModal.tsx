@@ -17,7 +17,7 @@ interface Props {
   onDownload: (format: "pdf" | "word") => void;
 }
 
-const RAZORPAY_KEY_ID = "124826716f628950481443ae1857628421";
+const CASHFREE_APP_ID = "124826716f628950481443ae1857628421";
 
 const PRICES = { pdf: 9, word: 20 };
 
