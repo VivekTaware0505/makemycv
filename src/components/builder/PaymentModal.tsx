@@ -49,13 +49,20 @@ const PaymentModal = ({ data, onDownload }: Props) => {
         paymentSessionId: orderData.payment_session_id,
         redirectTarget: "_modal",
       }).then(async (result: any) => {
-        if (result.error) {
-          toast.error(result.error.message || "Payment failed");
-          setLoading(false);
-          return;
+        console.log("Cashfree checkout result:", JSON.stringify(result));
+        
+        // If there's a hard error from the SDK itself
+        if (result?.error) {
+          // Some errors are just modal-close, not real failures
+          if (result.error?.message?.includes("closed") || result.error?.message?.includes("cancel")) {
+            setLoading(false);
+            return;
+          }
         }
-        if (result.paymentDetails?.paymentMessage === "Payment finished") {
-          const { data: verifyData } = await supabase.functions.invoke("cashfree-payment", {
+
+        // Always verify with backend regardless of frontend result
+        try {
+          const { data: verifyData, error: verifyError } = await supabase.functions.invoke("cashfree-payment", {
             body: {
               action: "verify_payment",
               order_id: orderData.order_id,
@@ -70,11 +77,15 @@ const PaymentModal = ({ data, onDownload }: Props) => {
               toast.success(`Your ${format.toUpperCase()} resume is downloading!`);
               setSuccess(false);
               setOpen(false);
-            }, 1800);
+            }, 1500);
           } else {
-            toast.error("Payment verification failed. Please contact support.");
+            // Payment not yet confirmed - could be pending
+            toast.error("Payment not confirmed yet. If you paid, please try again in a moment.");
             setLoading(false);
           }
+        } catch (verifyErr: any) {
+          toast.error("Could not verify payment. Please contact support.");
+          setLoading(false);
         }
       });
     } catch (err: any) {
