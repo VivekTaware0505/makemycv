@@ -102,10 +102,10 @@ const Builder = () => {
         </div>
 
         {/* Right: Preview + ATS + Download */}
-        <div className="w-full lg:w-[55%] bg-secondary/30">
-          <div className="p-6 space-y-4 max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <div className="w-full lg:w-[55%] bg-secondary/30 flex flex-col">
+          <div className="flex-1 p-6 space-y-4 max-h-[calc(100vh-4rem-5rem)] overflow-y-auto">
             {currentTemplate && (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border text-xs text-muted-foreground">
+              <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-card border border-border text-xs text-muted-foreground">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ background: currentTemplate.accentColor }} />
                 <span className="font-medium text-foreground">{currentTemplate.name}</span>
                 <span>·</span>
@@ -119,11 +119,14 @@ const Builder = () => {
               key={template}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="rounded-xl border border-border overflow-hidden shadow-card"
+              className="rounded-2xl border border-border overflow-hidden shadow-lg"
             >
               <ResumePreview data={data} template={template} showWatermark={true} />
             </motion.div>
+          </div>
 
+          {/* Sticky download bar */}
+          <div className="sticky bottom-0 p-4 bg-background/90 backdrop-blur-md border-t border-border">
             <PaymentModal data={data} onDownload={handleDownload} />
           </div>
         </div>
