@@ -51,7 +51,7 @@ Deno.serve(async (req) => {
             customer_id: `cust_${Date.now()}`,
             customer_name: customer_name || "Customer",
             customer_email: customer_email || "customer@example.com",
-            customer_phone: customer_phone || "9999999999",
+            customer_phone: sanitizePhone(customer_phone),
           },
           order_meta: {
             return_url: `${req.headers.get("origin") || "https://cvdotcom.lovable.app"}/builder?order_id={order_id}`,
