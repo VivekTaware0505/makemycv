@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
             customer_phone: customer_phone || "9999999999",
           },
           order_meta: {
-            return_url: "https://cvdotcom.lovable.app/builder?order_id={order_id}",
+            return_url: `${req.headers.get("origin") || "https://cvdotcom.lovable.app"}/builder?order_id={order_id}`,
           },
         }),
       });
