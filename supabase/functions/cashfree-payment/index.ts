@@ -1,6 +1,13 @@
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
+}
+
+function sanitizePhone(phone: string | undefined): string {
+  if (!phone) return "9999999999";
+  const digits = phone.replace(/[^0-9]/g, "");
+  if (digits.length >= 10) return digits.slice(-10);
+  return "9999999999";
 }
 
 const CASHFREE_APP_ID = "124826716f628950481443ae1857628421";
