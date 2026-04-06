@@ -70,8 +70,8 @@ const Builder = () => {
         </div>
 
         {/* Template selector */}
-        <div className="flex items-center gap-1.5 overflow-x-auto max-w-[50%]">
-          {templates.slice(0, 6).map((t) => (
+        <div className="flex items-center gap-1.5 overflow-x-auto max-w-[55%] scrollbar-hide">
+          {templates.slice(0, 8).map((t) => (
             <button
               key={t.id}
               onClick={() => setTemplate(t.id)}
@@ -91,7 +91,7 @@ const Builder = () => {
             className="text-xs text-muted-foreground whitespace-nowrap"
             onClick={() => navigate("/templates")}
           >
-            All →
+            All {templates.length} →
           </Button>
         </div>
       </div>
