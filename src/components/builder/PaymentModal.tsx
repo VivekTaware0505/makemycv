@@ -8,16 +8,49 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   data: ResumeData;
-  onDownload: (format: "pdf" | "word") => void;
+  onDownload: (format: "pdf" | "word") => Promise<void> | void;
 }
 
 const PRICES = { pdf: 9, word: 20 };
+const PAYMENT_VERIFY_ATTEMPTS = 6;
+const PAYMENT_VERIFY_DELAY_MS = 2000;
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const PaymentModal = ({ data, onDownload }: Props) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState<"pdf" | "word" | null>(null);
+
+  const verifyPaymentWithRetry = async (orderId: string) => {
+    for (let attempt = 0; attempt < PAYMENT_VERIFY_ATTEMPTS; attempt += 1) {
+      const { data: verifyData, error: verifyError } = await supabase.functions.invoke("cashfree-payment", {
+        body: {
+          action: "verify_payment",
+          order_id: orderId,
+        },
+      });
+
+      if (verifyData?.verified) {
+        return verifyData;
+      }
+
+      const orderStatus = verifyData?.order_status;
+      const isLastAttempt = attempt === PAYMENT_VERIFY_ATTEMPTS - 1;
+
+      if (isLastAttempt) {
+        throw new Error(
+          verifyError?.message ||
+            (orderStatus ? `Payment status is ${orderStatus}.` : "Payment could not be confirmed yet."),
+        );
+      }
+
+      await wait(PAYMENT_VERIFY_DELAY_MS);
+    }
+
+    throw new Error("Payment could not be confirmed.");
+  };
 
   const handlePayment = async (format: "pdf" | "word") => {
     setSelectedFormat(format);
@@ -45,7 +78,7 @@ const PaymentModal = ({ data, onDownload }: Props) => {
 
       const cf = cashfree({ mode: "production" });
 
-      cf.checkout({
+       cf.checkout({
         paymentSessionId: orderData.payment_session_id,
         redirectTarget: "_modal",
       }).then(async (result: any) => {
@@ -61,31 +94,18 @@ const PaymentModal = ({ data, onDownload }: Props) => {
         }
 
         // Always verify with backend regardless of frontend result
-        try {
-          const { data: verifyData, error: verifyError } = await supabase.functions.invoke("cashfree-payment", {
-            body: {
-              action: "verify_payment",
-              order_id: orderData.order_id,
-            },
-          });
-
-          if (verifyData?.verified) {
-            setLoading(false);
-            setSuccess(true);
-            setTimeout(() => {
-              onDownload(format);
-              toast.success(`Your ${format.toUpperCase()} resume is downloading!`);
-              setSuccess(false);
-              setOpen(false);
-            }, 1500);
-          } else {
-            // Payment not yet confirmed - could be pending
-            toast.error("Payment not confirmed yet. If you paid, please try again in a moment.");
-            setLoading(false);
-          }
+         try {
+           await verifyPaymentWithRetry(orderData.order_id);
+           setSuccess(true);
+           await wait(1200);
+           await onDownload(format);
+           toast.success(`Your ${format.toUpperCase()} resume is downloading!`);
+           setSuccess(false);
+           setOpen(false);
         } catch (verifyErr: any) {
-          toast.error("Could not verify payment. Please contact support.");
-          setLoading(false);
+           toast.error(verifyErr?.message || "Could not verify payment. Please contact support.");
+         } finally {
+           setLoading(false);
         }
       });
     } catch (err: any) {
