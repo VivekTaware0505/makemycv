@@ -1,6 +1,20 @@
 import { ResumeData } from "./resume";
 
-export type TemplateId = "classic" | "modern" | "it-developer" | "banking" | "healthcare" | "marketing" | "engineering" | "creative";
+export type TemplateId = 
+  | "classic" 
+  | "modern" 
+  | "it-developer" 
+  | "banking" 
+  | "healthcare" 
+  | "marketing" 
+  | "engineering" 
+  | "creative"
+  | "executive"
+  | "legal"
+  | "academic"
+  | "government"
+  | "consulting"
+  | "minimal";
 
 export interface TemplateInfo {
   id: TemplateId;
@@ -10,6 +24,7 @@ export interface TemplateInfo {
   color: string;
   headerBg: string;
   accentColor: string;
+  badge?: string;
 }
 
 export const templateCategories = [
@@ -21,6 +36,9 @@ export const templateCategories = [
   { id: "marketing", label: "Marketing" },
   { id: "engineering", label: "Engineering" },
   { id: "creative", label: "Creative" },
+  { id: "executive", label: "Executive" },
+  { id: "legal", label: "Legal & Govt" },
+  { id: "academic", label: "Academic" },
 ];
 
 export const templates: TemplateInfo[] = [
@@ -32,6 +50,7 @@ export const templates: TemplateInfo[] = [
     color: "#1a1a1a",
     headerBg: "#ffffff",
     accentColor: "#1a1a1a",
+    badge: "Popular",
   },
   {
     id: "modern",
@@ -41,6 +60,26 @@ export const templates: TemplateInfo[] = [
     color: "#111827",
     headerBg: "#111827",
     accentColor: "#111827",
+  },
+  {
+    id: "minimal",
+    name: "Ultra Minimal",
+    category: "general",
+    description: "Stripped-down elegance — let your content speak",
+    color: "#374151",
+    headerBg: "#ffffff",
+    accentColor: "#374151",
+    badge: "New",
+  },
+  {
+    id: "executive",
+    name: "Executive Suite",
+    category: "executive",
+    description: "Premium two-tone layout for C-level & senior roles",
+    color: "#0c1425",
+    headerBg: "#0c1425",
+    accentColor: "#b8860b",
+    badge: "Premium",
   },
   {
     id: "it-developer",
@@ -95,5 +134,43 @@ export const templates: TemplateInfo[] = [
     color: "#9333ea",
     headerBg: "#9333ea",
     accentColor: "#9333ea",
+  },
+  {
+    id: "legal",
+    name: "Legal & Compliance",
+    category: "legal",
+    description: "Conservative, authoritative format for legal professionals",
+    color: "#1c1917",
+    headerBg: "#1c1917",
+    accentColor: "#78350f",
+    badge: "New",
+  },
+  {
+    id: "academic",
+    name: "Academic CV",
+    category: "academic",
+    description: "Scholarly layout for professors, researchers & PhDs",
+    color: "#1e3a5f",
+    headerBg: "#ffffff",
+    accentColor: "#1e3a5f",
+  },
+  {
+    id: "government",
+    name: "Government Official",
+    category: "legal",
+    description: "Formal structure for government & public sector roles",
+    color: "#1a365d",
+    headerBg: "#1a365d",
+    accentColor: "#1a365d",
+  },
+  {
+    id: "consulting",
+    name: "Consulting Pro",
+    category: "executive",
+    description: "Sharp, data-driven layout for consultants & strategists",
+    color: "#0f172a",
+    headerBg: "#0f172a",
+    accentColor: "#0ea5e9",
+    badge: "New",
   },
 ];
