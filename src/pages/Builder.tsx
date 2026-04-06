@@ -23,11 +23,13 @@ const Builder = () => {
 
   const handleDownload = async (format: "pdf" | "word") => {
     const element = document.getElementById("resume-preview");
-    if (!element) return;
+    if (!element) {
+      throw new Error("Resume preview is not ready yet. Please try again.");
+    }
 
     if (format === "pdf") {
       const html2pdf = (await import("html2pdf.js")).default;
-      html2pdf()
+      await html2pdf()
         .set({
           margin: 0,
           filename: `${data.name || "resume"}.pdf`,
