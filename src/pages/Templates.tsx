@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Briefcase, Code, Landmark, HeartPulse, Megaphone, Wrench, Palette, LayoutGrid } from "lucide-react";
+import { Briefcase, Code, Landmark, HeartPulse, Megaphone, Wrench, Palette, LayoutGrid, Crown, Scale, GraduationCap, ArrowRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { templates, templateCategories, TemplateId } from "@/types/templates";
 import Navbar from "@/components/landing/Navbar";
@@ -16,6 +16,15 @@ const categoryIcons: Record<string, React.ElementType> = {
   marketing: Megaphone,
   engineering: Wrench,
   creative: Palette,
+  executive: Crown,
+  legal: Scale,
+  academic: GraduationCap,
+};
+
+const badgeColors: Record<string, { bg: string; text: string }> = {
+  Popular: { bg: "#f0fdf4", text: "#15803d" },
+  New: { bg: "#eff6ff", text: "#1d4ed8" },
+  Premium: { bg: "#fefce8", text: "#a16207" },
 };
 
 const Templates = () => {
@@ -42,11 +51,15 @@ const Templates = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary mb-4">
+              <Star className="w-3 h-3" />
+              {templates.length} Professional Templates
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
               Choose Your Template
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-              Profession-specific templates designed to pass ATS systems and impress recruiters
+              Industry-specific, ATS-optimized templates crafted by HR professionals
             </p>
           </motion.div>
 
@@ -78,14 +91,13 @@ const Templates = () => {
                 key={tmpl.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-card-hover transition-all duration-300 cursor-pointer"
+                transition={{ delay: i * 0.04 }}
+                className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-card-hover hover:border-foreground/10 transition-all duration-300 cursor-pointer"
                 onClick={() => handleSelect(tmpl.id)}
               >
                 {/* Preview mockup */}
-                <div className="aspect-[3/4] relative overflow-hidden">
-                  {/* Mini resume preview */}
-                  <div className="absolute inset-3 rounded-lg overflow-hidden border border-border/50" style={{ background: '#fff' }}>
+                <div className="aspect-[3/4] relative overflow-hidden bg-secondary/30">
+                  <div className="absolute inset-3 rounded-lg overflow-hidden border border-border/50 shadow-sm" style={{ background: '#fff' }}>
                     {/* Header bar */}
                     <div className="h-16 flex items-center justify-center" style={{ background: tmpl.headerBg }}>
                       <div className="text-center">
@@ -114,6 +126,16 @@ const Templates = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* Badge */}
+                  {tmpl.badge && (
+                    <div className="absolute top-5 right-5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider" style={{
+                      background: badgeColors[tmpl.badge]?.bg || '#f3f4f6',
+                      color: badgeColors[tmpl.badge]?.text || '#374151',
+                    }}>
+                      {tmpl.badge}
+                    </div>
+                  )}
 
                   {/* Hover overlay */}
                   <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/5 transition-colors flex items-center justify-center">
