@@ -13,6 +13,12 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           <button
             className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
+            onClick={() => navigate("/ats-checker")}
+          >
+            ATS Checker
+          </button>
+          <button
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
             onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Pricing
