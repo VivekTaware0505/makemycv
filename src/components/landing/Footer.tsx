@@ -12,22 +12,22 @@ const Footer = () => {
           {/* Brand + Founder */}
           <div className="md:col-span-2">
             <div className="text-2xl font-bold mb-3" style={{ color: 'hsl(var(--primary-foreground))' }}>
-              CV<span style={{ color: 'hsl(var(--muted-foreground))' }}>.com</span>
+              MakeMy<span style={{ color: 'hsl(var(--muted-foreground))' }}>CV.com</span>
             </div>
             <p className="text-sm leading-relaxed mb-5" style={{ color: 'hsl(var(--muted-foreground))' }}>
               Build professional, ATS-optimized resumes in minutes. Trusted by thousands of job seekers across India.
             </p>
 
             {/* Founder */}
-            <div className="p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
-              <p className="text-xs uppercase tracking-widest mb-2" style={{ color: 'hsl(var(--muted-foreground))' }}>
+            <div className="p-5 rounded-xl" style={{ background: 'rgba(255,255,255,0.07)' }}>
+              <p className="text-xs uppercase tracking-widest mb-3" style={{ color: 'hsl(var(--muted-foreground))' }}>
                 Founded by
               </p>
-              <div className="flex items-center gap-3">
-                <img src={founderPhoto} alt="Mr. Vivek Taware" className="w-10 h-10 rounded-full object-cover" />
+              <div className="flex items-center gap-4">
+                <img src={founderPhoto} alt="Mr. Vivek Taware" className="w-14 h-14 rounded-full object-cover ring-2 ring-white/10" />
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: 'hsl(var(--primary-foreground))' }}>Mr. Vivek Taware</p>
-                  <p className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>Making job hunting easier</p>
+                  <p className="text-base font-semibold" style={{ color: 'hsl(var(--primary-foreground))' }}>Mr. Vivek Taware</p>
+                  <p className="text-sm mt-0.5" style={{ color: 'hsl(var(--muted-foreground))' }}>Making job hunting easier</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 mt-3">
@@ -92,7 +92,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           <p className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
-            © {new Date().getFullYear()} CV.com. All rights reserved.
+            © {new Date().getFullYear()} MakeMyCV.com. All rights reserved.
           </p>
           <p className="text-xs flex items-center gap-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
             Made with <Heart className="w-3 h-3 text-destructive" /> in India
