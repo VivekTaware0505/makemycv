@@ -4,10 +4,9 @@ import { TemplateId } from "@/types/templates";
 interface Props {
   data: ResumeData;
   template: TemplateId;
-  showWatermark?: boolean;
 }
 
-const ResumePreview = ({ data, template, showWatermark = true }: Props) => {
+const ResumePreview = ({ data, template }: Props) => {
   const skills = data.skills.split(",").map((s) => s.trim()).filter(Boolean);
   const validEdu = data.education.filter((e) => e.degree);
   const validExp = data.experience.filter((e) => e.title);
@@ -20,7 +19,6 @@ const ResumePreview = ({ data, template, showWatermark = true }: Props) => {
   if (config.layout === "two-column") {
     return (
       <div id="resume-preview" className="relative bg-white min-h-[800px] font-sans text-sm" style={{ fontFamily: config.fontFamily, color: '#1a1a1a' }}>
-        {showWatermark && <Watermark />}
         
         {/* Header */}
         <div className="p-8 pb-5" style={{ background: config.headerBg, color: '#fff' }}>
@@ -135,8 +133,6 @@ const ResumePreview = ({ data, template, showWatermark = true }: Props) => {
   // Default single-column layout
   return (
     <div id="resume-preview" className="relative bg-white min-h-[800px] font-sans text-sm" style={{ fontFamily: config.fontFamily, color: '#1a1a1a' }}>
-      {showWatermark && <Watermark />}
-
       {/* Header */}
       {config.headerStyle === "banner" ? (
         <div className="p-8 pb-6" style={{ background: config.headerBg, color: '#fff' }}>
@@ -284,12 +280,6 @@ const ResumePreview = ({ data, template, showWatermark = true }: Props) => {
     </div>
   );
 };
-
-const Watermark = () => (
-  <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-    <span className="text-5xl font-bold rotate-[-30deg] select-none" style={{ color: 'rgba(0,0,0,0.04)' }}>makemycv.com</span>
-  </div>
-);
 
 const SectionTitle = ({ label, color }: { label: string; color: string }) => (
   <h2 className="text-xs font-bold uppercase tracking-widest pb-1" style={{ color, borderBottom: `1px solid ${color}20` }}>{label}</h2>
