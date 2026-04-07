@@ -4,7 +4,6 @@ import { TemplateId } from "@/types/templates";
 interface Props {
   data: ResumeData;
   template: TemplateId;
-  showWatermark?: boolean;
 }
 
 const ResumePreview = ({ data, template, showWatermark = true }: Props) => {

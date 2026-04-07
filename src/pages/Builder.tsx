@@ -123,7 +123,7 @@ const Builder = () => {
               animate={{ opacity: 1 }}
               className="rounded-2xl border border-border overflow-hidden shadow-lg"
             >
-              <ResumePreview data={data} template={template} showWatermark={true} />
+              <ResumePreview data={data} template={template} />
             </motion.div>
           </div>
 
