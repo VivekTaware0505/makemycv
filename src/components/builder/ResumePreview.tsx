@@ -287,7 +287,7 @@ const ResumePreview = ({ data, template, showWatermark = true }: Props) => {
 
 const Watermark = () => (
   <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-    <span className="text-6xl font-bold rotate-[-30deg] select-none" style={{ color: 'rgba(0,0,0,0.06)' }}>PREVIEW</span>
+    <span className="text-5xl font-bold rotate-[-30deg] select-none" style={{ color: 'rgba(0,0,0,0.04)' }}>makemycv.com</span>
   </div>
 );
 

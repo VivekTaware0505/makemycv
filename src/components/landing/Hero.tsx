@@ -62,12 +62,17 @@ const Hero = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-16 flex justify-center gap-8 text-sm text-muted-foreground"
+          className="mt-16 flex flex-wrap justify-center gap-6 md:gap-10 text-sm text-muted-foreground"
         >
-          {["Free to Build", "ATS Optimized", "Instant Download"].map((text) => (
-            <div key={text} className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-success" />
-              {text}
+          {[
+            { text: "Free to Build", emoji: "✅" },
+            { text: "ATS Optimized", emoji: "📊" },
+            { text: "14+ Templates", emoji: "📄" },
+            { text: "Instant Download", emoji: "⚡" },
+          ].map(({ text, emoji }) => (
+            <div key={text} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border shadow-card">
+              <span>{emoji}</span>
+              <span className="font-medium">{text}</span>
             </div>
           ))}
         </motion.div>

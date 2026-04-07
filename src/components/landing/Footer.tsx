@@ -92,7 +92,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           <p className="text-xs" style={{ color: 'hsl(var(--muted-foreground))' }}>
-            © {new Date().getFullYear()} CV.com. All rights reserved.
+            © {new Date().getFullYear()} MakeMyCV.com. All rights reserved.
           </p>
           <p className="text-xs flex items-center gap-1" style={{ color: 'hsl(var(--muted-foreground))' }}>
             Made with <Heart className="w-3 h-3 text-destructive" /> in India
