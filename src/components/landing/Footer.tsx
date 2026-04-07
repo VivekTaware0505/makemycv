@@ -12,7 +12,7 @@ const Footer = () => {
           {/* Brand + Founder */}
           <div className="md:col-span-2">
             <div className="text-2xl font-bold mb-3" style={{ color: 'hsl(var(--primary-foreground))' }}>
-              CV<span style={{ color: 'hsl(var(--muted-foreground))' }}>.com</span>
+              MakeMy<span style={{ color: 'hsl(var(--muted-foreground))' }}>CV.com</span>
             </div>
             <p className="text-sm leading-relaxed mb-5" style={{ color: 'hsl(var(--muted-foreground))' }}>
               Build professional, ATS-optimized resumes in minutes. Trusted by thousands of job seekers across India.
