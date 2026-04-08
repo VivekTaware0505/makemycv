@@ -1,21 +1,21 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check, FileText, FileIcon } from "lucide-react";
+import { Check, FileText, FileIcon, Gift } from "lucide-react";
 
 const plans = [
   {
     name: "PDF Download",
-    price: "₹9",
+    price: "Free",
     icon: FileText,
     features: ["Clean PDF format", "Print-ready quality", "ATS compatible", "Instant delivery"],
     popular: true,
   },
   {
     name: "Word Download",
-    price: "₹20",
+    price: "Free",
     icon: FileIcon,
-    features: ["Editable .docx format", "Easy to customize", "ATS compatible", "Instant delivery"],
+    features: ["Editable .doc format", "Easy to customize", "ATS compatible", "Instant delivery"],
     popular: false,
   },
 ];
@@ -32,11 +32,15 @@ const Pricing = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+            <Gift className="w-4 h-4" />
+            100% Free — No Hidden Charges
+          </div>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Simple, transparent pricing
+            Download your resume for free
           </h2>
           <p className="text-muted-foreground text-lg">
-            Build for free. Pay only when you download.
+            Build and download in PDF or Word format — completely free, no sign-up needed.
           </p>
         </motion.div>
 
@@ -71,7 +75,7 @@ const Pricing = () => {
                 variant={plan.popular ? "default" : "outline"}
                 onClick={() => navigate("/builder")}
               >
-                Get Started
+                Download Now
               </Button>
             </motion.div>
           ))}
