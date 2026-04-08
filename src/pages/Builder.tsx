@@ -9,7 +9,7 @@ import { calculateATSScore } from "@/lib/ats";
 import ResumeForm from "@/components/builder/ResumeForm";
 import ResumePreview from "@/components/builder/ResumePreview";
 import ATSScore from "@/components/builder/ATSScore";
-import PaymentModal from "@/components/builder/PaymentModal";
+import DownloadBar from "@/components/builder/DownloadBar";
 
 const Builder = () => {
   const navigate = useNavigate();
