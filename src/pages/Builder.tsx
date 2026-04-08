@@ -129,7 +129,7 @@ const Builder = () => {
 
           {/* Sticky download bar */}
           <div className="sticky bottom-0 p-4 bg-background/90 backdrop-blur-md border-t border-border">
-            <PaymentModal data={data} onDownload={handleDownload} />
+            <DownloadBar data={data} template={template} onDownload={handleDownload} />
           </div>
         </div>
       </div>
