@@ -9,7 +9,7 @@ import { calculateATSScore } from "@/lib/ats";
 import ResumeForm from "@/components/builder/ResumeForm";
 import ResumePreview from "@/components/builder/ResumePreview";
 import ATSScore from "@/components/builder/ATSScore";
-import PaymentModal from "@/components/builder/PaymentModal";
+import DownloadBar from "@/components/builder/DownloadBar";
 
 const Builder = () => {
   const navigate = useNavigate();
@@ -129,7 +129,7 @@ const Builder = () => {
 
           {/* Sticky download bar */}
           <div className="sticky bottom-0 p-4 bg-background/90 backdrop-blur-md border-t border-border">
-            <PaymentModal data={data} onDownload={handleDownload} />
+            <DownloadBar data={data} template={template} onDownload={handleDownload} />
           </div>
         </div>
       </div>
