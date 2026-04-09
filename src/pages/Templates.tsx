@@ -95,34 +95,64 @@ const Templates = () => {
                 className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-card-hover hover:border-foreground/10 transition-all duration-300 cursor-pointer"
                 onClick={() => handleSelect(tmpl.id)}
               >
-                {/* Preview mockup */}
+                {/* Preview mockup - realistic resume */}
                 <div className="aspect-[3/4] relative overflow-hidden bg-secondary/30">
                   <div className="absolute inset-3 rounded-lg overflow-hidden border border-border/50 shadow-sm" style={{ background: '#fff' }}>
-                    {/* Header bar */}
-                    <div className="h-16 flex items-center justify-center" style={{ background: tmpl.headerBg }}>
-                      <div className="text-center">
-                        <div className="w-20 h-2 rounded-full mx-auto mb-1" style={{ background: 'rgba(255,255,255,0.8)' }} />
-                        <div className="w-14 h-1.5 rounded-full mx-auto" style={{ background: 'rgba(255,255,255,0.4)' }} />
+                    {/* Header */}
+                    <div className="px-3 py-2.5" style={{ background: tmpl.headerBg === '#ffffff' ? '#fff' : tmpl.headerBg }}>
+                      <div className="text-center" style={{ color: tmpl.headerBg === '#ffffff' ? '#1a1a1a' : '#fff' }}>
+                        <div className="text-[8px] font-bold tracking-wide leading-none">JOHN ANDERSON</div>
+                        <div className="text-[5px] mt-0.5 opacity-70">Senior Software Engineer</div>
+                        <div className="flex justify-center gap-2 mt-1 text-[4px] opacity-50">
+                          <span>john@email.com</span>
+                          <span>•</span>
+                          <span>+91 98765 43210</span>
+                          <span>•</span>
+                          <span>LinkedIn</span>
+                        </div>
                       </div>
                     </div>
-                    {/* Content lines */}
-                    <div className="p-3 space-y-2">
-                      <div className="w-12 h-1.5 rounded-full" style={{ background: tmpl.accentColor }} />
-                      <div className="space-y-1">
-                        <div className="w-full h-1 rounded-full bg-border" />
-                        <div className="w-4/5 h-1 rounded-full bg-border" />
-                        <div className="w-3/5 h-1 rounded-full bg-border" />
+                    {/* Body */}
+                    <div className="px-3 py-2 space-y-1.5">
+                      {/* Summary */}
+                      <div>
+                        <div className="text-[5px] font-bold uppercase tracking-wider mb-0.5" style={{ color: tmpl.accentColor, borderBottom: `0.5px solid ${tmpl.accentColor}40` }}>Professional Summary</div>
+                        <div className="text-[4px] text-gray-600 leading-[1.4]">Results-driven professional with 8+ years of experience delivering high-impact solutions. Proven track record of leading cross-functional teams and driving business growth.</div>
                       </div>
-                      <div className="w-12 h-1.5 rounded-full mt-2" style={{ background: tmpl.accentColor }} />
-                      <div className="flex gap-1 flex-wrap">
-                        {[...Array(4)].map((_, j) => (
-                          <div key={j} className="h-3 rounded px-2" style={{ background: `${tmpl.accentColor}15`, width: `${20 + Math.random() * 20}%` }} />
-                        ))}
+                      {/* Experience */}
+                      <div>
+                        <div className="text-[5px] font-bold uppercase tracking-wider mb-0.5" style={{ color: tmpl.accentColor, borderBottom: `0.5px solid ${tmpl.accentColor}40` }}>Work Experience</div>
+                        <div className="mb-1">
+                          <div className="flex justify-between">
+                            <span className="text-[4.5px] font-semibold text-gray-800">Senior Engineer — Google</span>
+                            <span className="text-[3.5px] text-gray-400">2021–Present</span>
+                          </div>
+                          <div className="text-[3.5px] text-gray-500 leading-[1.4] mt-0.5">• Led a team of 12 engineers to deliver microservices platform<br/>• Reduced infrastructure costs by 40% through optimization</div>
+                        </div>
+                        <div>
+                          <div className="flex justify-between">
+                            <span className="text-[4.5px] font-semibold text-gray-800">Software Engineer — Microsoft</span>
+                            <span className="text-[3.5px] text-gray-400">2018–2021</span>
+                          </div>
+                          <div className="text-[3.5px] text-gray-500 leading-[1.4] mt-0.5">• Developed REST APIs serving 2M+ daily requests<br/>• Implemented CI/CD pipelines reducing deploy time by 60%</div>
+                        </div>
                       </div>
-                      <div className="w-12 h-1.5 rounded-full mt-2" style={{ background: tmpl.accentColor }} />
-                      <div className="space-y-1">
-                        <div className="w-full h-1 rounded-full bg-border" />
-                        <div className="w-5/6 h-1 rounded-full bg-border" />
+                      {/* Skills */}
+                      <div>
+                        <div className="text-[5px] font-bold uppercase tracking-wider mb-0.5" style={{ color: tmpl.accentColor, borderBottom: `0.5px solid ${tmpl.accentColor}40` }}>Skills</div>
+                        <div className="flex flex-wrap gap-0.5">
+                          {['React', 'Node.js', 'Python', 'AWS', 'Docker', 'SQL'].map(s => (
+                            <span key={s} className="px-1 py-[1px] text-[3.5px] rounded" style={{ background: `${tmpl.accentColor}12`, color: tmpl.accentColor }}>{s}</span>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Education */}
+                      <div>
+                        <div className="text-[5px] font-bold uppercase tracking-wider mb-0.5" style={{ color: tmpl.accentColor, borderBottom: `0.5px solid ${tmpl.accentColor}40` }}>Education</div>
+                        <div className="flex justify-between">
+                          <span className="text-[4px] font-semibold text-gray-800">B.Tech Computer Science — IIT Delhi</span>
+                          <span className="text-[3.5px] text-gray-400">2014–2018</span>
+                        </div>
                       </div>
                     </div>
                   </div>

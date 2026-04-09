@@ -31,7 +31,7 @@ const Hero = () => {
 
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-foreground mb-6 max-w-5xl mx-auto leading-[1.05]">
             Build Your Perfect
-            <span className="block text-muted-foreground">Resume Today</span>
+            <span className="block text-primary">Resume Today</span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">

@@ -5,25 +5,32 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-sm">
       <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="text-xl font-bold tracking-tight text-foreground cursor-pointer" onClick={() => navigate("/")}>
-          MakeMy<span className="text-muted-foreground">CV.com</span>
+        <div className="text-xl font-bold tracking-tight text-foreground cursor-pointer flex items-center gap-1.5" onClick={() => navigate("/")}>
+          <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-primary-foreground text-xs font-black">M</div>
+          MakeMy<span className="text-primary">CV</span><span className="text-muted-foreground">.com</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <button
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors hidden sm:block"
+            onClick={() => navigate("/templates")}
+          >
+            Templates
+          </button>
+          <button
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors hidden sm:block"
             onClick={() => navigate("/ats-checker")}
           >
             ATS Checker
           </button>
           <button
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden sm:block"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors hidden sm:block"
             onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Pricing
           </button>
-          <Button size="sm" className="rounded-lg font-semibold" onClick={() => navigate("/builder")}>
+          <Button size="sm" className="rounded-lg font-semibold shadow-md hover:shadow-lg transition-shadow" onClick={() => navigate("/builder")}>
             Build Resume
           </Button>
         </div>
