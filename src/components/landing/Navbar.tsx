@@ -34,6 +34,10 @@ const Navbar = () => {
           <Button size="sm" className="rounded-lg font-semibold shadow-md hover:shadow-lg transition-shadow" onClick={() => navigate("/builder")}>
             Build Resume
           </Button>
+          <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-border">
+            <img src={founderPhoto} alt="Vivek Taware" className="w-7 h-7 rounded-full object-cover ring-1 ring-border" />
+            <span className="text-[11px] text-muted-foreground leading-tight font-medium">Vivek<br/>Taware</span>
+          </div>
         </div>
       </div>
     </nav>
