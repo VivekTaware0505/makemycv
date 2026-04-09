@@ -9,8 +9,8 @@ const Footer = () => {
     <footer className="bg-[#0f1117] text-white">
       {/* CTA Banner */}
       <div className="border-b border-white/5">
-        <div className="container mx-auto px-6 py-12 text-center">
-          <h3 className="text-2xl md:text-3xl font-bold mb-3">Ready to Build Your Resume?</h3>
+        <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 text-center">
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-3">Ready to Build Your Resume?</h3>
           <p className="text-sm text-white/50 mb-6 max-w-md mx-auto">Join thousands of professionals who landed their dream jobs with MakeMyCV</p>
           <button
             onClick={() => navigate("/builder")}
@@ -22,10 +22,10 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-14">
-        <div className="grid md:grid-cols-12 gap-10">
+      <div className="container mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-8 sm:gap-10">
           {/* Brand */}
-          <div className="md:col-span-4">
+          <div className="col-span-2 md:col-span-4">
             <div className="flex items-center gap-2 text-xl font-bold mb-4">
               <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-xs font-black">M</div>
               MakeMy<span className="text-primary">CV</span><span className="text-white/40">.com</span>
@@ -81,7 +81,7 @@ const Footer = () => {
           </div>
 
           {/* Founder */}
-          <div className="md:col-span-4">
+          <div className="col-span-2 md:col-span-4">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-white/30 mb-4">Founder</h4>
             <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
               <div className="flex items-center gap-5">

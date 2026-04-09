@@ -24,8 +24,8 @@ const Pricing = () => {
   const navigate = useNavigate();
 
   return (
-    <section id="pricing" className="py-24 gradient-hero">
-      <div className="container mx-auto px-6">
+    <section id="pricing" className="py-16 sm:py-24 gradient-hero">
+      <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -36,7 +36,7 @@ const Pricing = () => {
             <Gift className="w-4 h-4" />
             100% Free — No Hidden Charges
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
             Download your resume for free
           </h2>
           <p className="text-muted-foreground text-lg">
