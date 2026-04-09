@@ -35,8 +35,8 @@ const features = [
 ];
 
 const Features = () => (
-  <section className="py-24 bg-background">
-    <div className="container mx-auto px-6">
+  <section className="py-16 sm:py-24 bg-background">
+    <div className="container mx-auto px-4 sm:px-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -44,7 +44,7 @@ const Features = () => (
         className="text-center mb-16"
       >
         <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 block">Why MakeMyCV.com</span>
-        <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-foreground mb-4">
           Everything you need to get hired
         </h2>
         <p className="text-muted-foreground text-lg max-w-xl mx-auto">
@@ -60,7 +60,7 @@ const Features = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
-            className="group p-7 rounded-2xl border border-border gradient-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
+            className="group p-5 sm:p-7 rounded-2xl border border-border gradient-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
           >
             <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
               <feature.icon className="w-6 h-6 text-primary-foreground" />
