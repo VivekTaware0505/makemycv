@@ -83,17 +83,17 @@ const Footer = () => {
           {/* Founder */}
           <div className="md:col-span-4">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-white/30 mb-4">Founder</h4>
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
-              <div className="flex items-center gap-4">
+            <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/[0.06]">
+              <div className="flex items-center gap-5">
                 <img
                   src={founderPhoto}
                   alt="Mr. Vivek Taware"
-                  className="w-16 h-16 rounded-xl object-cover ring-2 ring-primary/30"
+                  className="w-20 h-20 rounded-xl object-cover ring-2 ring-primary/30"
                 />
                 <div>
-                  <p className="font-semibold text-base">Mr. Vivek Taware</p>
-                  <p className="text-xs text-white/40 mt-0.5">Founder & Developer</p>
-                  <p className="text-xs text-white/30 mt-1">Making job hunting easier for everyone across India</p>
+                  <p className="font-semibold text-lg">Mr. Vivek Taware</p>
+                  <p className="text-sm text-white/40 mt-0.5">Founder & Developer</p>
+                  <p className="text-xs text-white/30 mt-1.5 leading-relaxed">Making job hunting easier for everyone across India</p>
                 </div>
               </div>
             </div>
