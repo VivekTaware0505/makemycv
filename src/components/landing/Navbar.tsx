@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import founderPhoto from "@/assets/founder.webp";
 
 const Navbar = () => {
   const navigate = useNavigate();
