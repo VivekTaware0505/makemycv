@@ -172,15 +172,15 @@ const ResumePreview = ({ data, template }: Props) => {
                 {data.name || "Your Name"}
               </h1>
               <div className="w-12 h-0.5 mt-2 mb-2" style={{ background: config.accentColor }} />
-          <div className="flex flex-wrap items-center gap-3 text-xs" style={{ color: '#888' }}>
-            {data.email && <span>{data.email}</span>}
-            {data.phone && <span>{data.phone}</span>}
-            {data.linkedin && <span>{data.linkedin}</span>}
-            {data.portfolio && <span>{data.portfolio}</span>}
-          </div>
-          {data.summary && (
-            <p className="text-xs mt-3 leading-relaxed" style={{ color: '#555' }}>{data.summary}</p>
-          )}
+              <div className="flex flex-wrap items-center gap-3 text-xs" style={{ color: '#888' }}>
+                {data.email && <span>{data.email}</span>}
+                {data.phone && <span>{data.phone}</span>}
+                {data.linkedin && <span>{data.linkedin}</span>}
+                {data.portfolio && <span>{data.portfolio}</span>}
+              </div>
+              {data.summary && (
+                <p className="text-xs mt-3 leading-relaxed" style={{ color: '#555' }}>{data.summary}</p>
+              )}
             </div>
           </div>
         </div>
