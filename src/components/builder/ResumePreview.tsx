@@ -10,7 +10,7 @@ const ResumePreview = ({ data, template }: Props) => {
   const skills = data.skills.split(",").map((s) => s.trim()).filter(Boolean);
   const validEdu = data.education.filter((e) => e.degree);
   const validExp = data.experience.filter((e) => e.title);
-  const validProjects = data.projects.filter((p) => p.name);
+  const validProjects = data.showProjects ? data.projects.filter((p) => p.name) : [];
   const validCerts = data.certifications.filter((c) => c.name);
 
   const config = getTemplateConfig(template);
@@ -22,7 +22,12 @@ const ResumePreview = ({ data, template }: Props) => {
         
         {/* Header */}
         <div className="p-8 pb-5" style={{ background: config.headerBg, color: '#fff' }}>
-          <h1 className="text-2xl font-bold tracking-tight">{data.name || "Your Name"}</h1>
+          <div className="flex items-start gap-4">
+            {data.photo && (
+              <img src={data.photo} alt={data.name} className="w-16 h-16 rounded-lg object-cover border-2 border-white/20 flex-shrink-0" />
+            )}
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">{data.name || "Your Name"}</h1>
           <div className="flex flex-wrap items-center gap-3 mt-2 text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
             {data.email && <span>✉ {data.email}</span>}
             {data.phone && <span>☎ {data.phone}</span>}
@@ -32,6 +37,8 @@ const ResumePreview = ({ data, template }: Props) => {
           {data.summary && (
             <p className="text-xs mt-3 leading-relaxed" style={{ color: 'rgba(255,255,255,0.85)' }}>{data.summary}</p>
           )}
+            </div>
+          </div>
         </div>
 
         <div className="flex">
@@ -136,7 +143,12 @@ const ResumePreview = ({ data, template }: Props) => {
       {/* Header */}
       {config.headerStyle === "banner" ? (
         <div className="p-8 pb-6" style={{ background: config.headerBg, color: '#fff' }}>
-          <h1 className="text-2xl font-bold tracking-tight">{data.name || "Your Name"}</h1>
+          <div className="flex items-start gap-4">
+            {data.photo && (
+              <img src={data.photo} alt={data.name} className="w-16 h-16 rounded-lg object-cover border-2 border-white/20 flex-shrink-0" />
+            )}
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight">{data.name || "Your Name"}</h1>
           <div className="flex flex-wrap items-center gap-3 mt-2 text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>
             {data.email && <span>✉ {data.email}</span>}
             {data.phone && <span>☎ {data.phone}</span>}
@@ -146,11 +158,19 @@ const ResumePreview = ({ data, template }: Props) => {
           {data.summary && (
             <p className="text-xs mt-3 leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{data.summary}</p>
           )}
+            </div>
+          </div>
         </div>
       ) : config.headerStyle === "minimal" ? (
         <div className="p-8 pb-4">
-          <h1 className="text-2xl font-bold tracking-tight" style={{ color: '#1a1a1a' }}>
-            {data.name || "Your Name"}
+          <div className="flex items-start gap-4">
+            {data.photo && (
+              <img src={data.photo} alt={data.name} className="w-14 h-14 rounded-lg object-cover border border-border flex-shrink-0" />
+            )}
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight" style={{ color: '#1a1a1a' }}>
+                {data.name || "Your Name"}
+              </h1>
           </h1>
           <div className="w-12 h-0.5 mt-2 mb-2" style={{ background: config.accentColor }} />
           <div className="flex flex-wrap items-center gap-3 text-xs" style={{ color: '#888' }}>
@@ -162,9 +182,14 @@ const ResumePreview = ({ data, template }: Props) => {
           {data.summary && (
             <p className="text-xs mt-3 leading-relaxed" style={{ color: '#555' }}>{data.summary}</p>
           )}
+            </div>
+          </div>
         </div>
       ) : (
         <div className="p-8 pb-4 text-center" style={{ borderBottom: `2px solid ${config.accentColor}` }}>
+          {data.photo && (
+            <img src={data.photo} alt={data.name} className="w-16 h-16 rounded-full object-cover border-2 mx-auto mb-2" style={{ borderColor: config.accentColor }} />
+          )}
           <h1 className="text-2xl font-bold tracking-tight" style={{ color: config.accentColor }}>
             {data.name || "Your Name"}
           </h1>
