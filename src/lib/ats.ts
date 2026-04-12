@@ -44,11 +44,15 @@ export function calculateATSScore(data: ResumeData): { score: number; suggestion
   else if (validExp.length === 1) { score += 12; suggestions.push("Add more work experience for a stronger resume"); }
   else suggestions.push("Add your work experience");
 
-  // Projects (10)
-  const validProjects = data.projects.filter((p) => p.name.trim() && p.description.trim());
-  if (validProjects.length >= 2) score += 10;
-  else if (validProjects.length === 1) { score += 6; suggestions.push("Add more projects to showcase your work"); }
-  else suggestions.push("Add projects to demonstrate your skills");
+  // Projects (10) - only if showProjects is enabled
+  if (data.showProjects) {
+    const validProjects = data.projects.filter((p) => p.name.trim() && p.description.trim());
+    if (validProjects.length >= 2) score += 10;
+    else if (validProjects.length === 1) { score += 6; suggestions.push("Add more projects to showcase your work"); }
+    else suggestions.push("Add projects to demonstrate your skills");
+  } else {
+    score += 10; // Give full points if section is intentionally hidden
+  }
 
   // Certifications (5)
   const validCerts = data.certifications.filter((c) => c.name.trim());
