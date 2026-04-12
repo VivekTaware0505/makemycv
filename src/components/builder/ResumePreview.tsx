@@ -171,8 +171,7 @@ const ResumePreview = ({ data, template }: Props) => {
               <h1 className="text-2xl font-bold tracking-tight" style={{ color: '#1a1a1a' }}>
                 {data.name || "Your Name"}
               </h1>
-          </h1>
-          <div className="w-12 h-0.5 mt-2 mb-2" style={{ background: config.accentColor }} />
+              <div className="w-12 h-0.5 mt-2 mb-2" style={{ background: config.accentColor }} />
           <div className="flex flex-wrap items-center gap-3 text-xs" style={{ color: '#888' }}>
             {data.email && <span>{data.email}</span>}
             {data.phone && <span>{data.phone}</span>}
