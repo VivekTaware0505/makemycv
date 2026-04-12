@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import founderPhoto from "@/assets/founder.webp";
+
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -40,10 +40,6 @@ const Navbar = () => {
           <Button size="sm" className="rounded-lg font-semibold shadow-md" onClick={() => navigate("/builder")}>
             Build Resume
           </Button>
-          <div className="flex items-center gap-2 pl-3 border-l border-border">
-            <img src={founderPhoto} alt="Vivek Taware" className="w-7 h-7 rounded-full object-cover ring-1 ring-border" />
-            <span className="text-[11px] text-muted-foreground leading-tight font-medium">Vivek<br />Taware</span>
-          </div>
         </div>
 
         {/* Mobile: CTA + hamburger */}
@@ -73,13 +69,6 @@ const Navbar = () => {
                 {link.label}
               </button>
             ))}
-            <div className="flex items-center gap-3 px-4 pt-3 mt-2 border-t border-border">
-              <img src={founderPhoto} alt="Vivek Taware" className="w-8 h-8 rounded-full object-cover ring-1 ring-border" />
-              <div>
-                <p className="text-sm font-medium text-foreground">Vivek Taware</p>
-                <p className="text-xs text-muted-foreground">Founder</p>
-              </div>
-            </div>
           </div>
         </div>
       )}
