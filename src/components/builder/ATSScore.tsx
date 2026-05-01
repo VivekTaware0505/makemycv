@@ -15,12 +15,12 @@ const ATSScore = ({ score, suggestions }: Props) => {
     <div className="p-4 rounded-xl border border-border bg-card">
       <div className="flex items-center gap-4 mb-4">
         <div className="relative w-20 h-20 flex-shrink-0">
-          <svg width="80" height="80" className="-rotate-90">
-            <circle cx="40" cy="40" r="40" stroke="hsl(var(--border))" strokeWidth="6" fill="none" />
+          <svg viewBox="0 0 100 100" className="w-20 h-20 -rotate-90">
+            <circle cx="50" cy="50" r="40" stroke="hsl(var(--border))" strokeWidth="8" fill="none" />
             <motion.circle
-              cx="40" cy="40" r="40"
+              cx="50" cy="50" r="40"
               stroke={color}
-              strokeWidth="6"
+              strokeWidth="8"
               fill="none"
               strokeLinecap="round"
               strokeDasharray={circumference}
@@ -30,7 +30,7 @@ const ATSScore = ({ score, suggestions }: Props) => {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-lg font-bold text-foreground">{score}</span>
+            <span className="text-xl font-bold text-foreground leading-none">{score}</span>
           </div>
         </div>
         <div>

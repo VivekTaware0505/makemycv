@@ -55,6 +55,7 @@ const Footer = () => {
                 { label: "Resume Builder", action: () => navigate("/builder") },
                 { label: "Templates", action: () => navigate("/templates") },
                 { label: "ATS Checker", action: () => navigate("/ats-checker") },
+                { label: "File Converter", action: () => navigate("/converter") },
                 { label: "Pricing", action: () => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }) },
               ].map((item) => (
                 <li key={item.label}>
