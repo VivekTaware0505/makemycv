@@ -1,13 +1,20 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, FileText, FileImage, Upload, Download, Loader2, CheckCircle, FileType } from "lucide-react";
+import { ArrowLeft, FileText, FileImage, Upload, Download, Loader2, CheckCircle, FileType, FileSpreadsheet, Minimize2, ImageDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 
-type ConverterId = "pdf-to-word" | "word-to-pdf" | "image-to-pdf" | "pdf-to-image";
+type ConverterId =
+  | "pdf-to-word"
+  | "word-to-pdf"
+  | "image-to-pdf"
+  | "pdf-to-image"
+  | "excel-to-pdf"
+  | "pdf-compress"
+  | "image-compress";
 
 interface ConverterTool {
   id: ConverterId;
@@ -25,6 +32,9 @@ const tools: ConverterTool[] = [
   { id: "word-to-pdf", title: "Word to PDF", desc: "Convert .doc/.docx to high-quality PDF", accept: ".doc,.docx", icon: FileText, color: "text-red-600", bg: "bg-red-50" },
   { id: "image-to-pdf", title: "Image to PDF", desc: "Combine JPG/PNG images into one PDF", accept: "image/*", multiple: true, icon: FileImage, color: "text-emerald-600", bg: "bg-emerald-50" },
   { id: "pdf-to-image", title: "PDF to Image", desc: "Export each PDF page as PNG image", accept: ".pdf", icon: FileImage, color: "text-purple-600", bg: "bg-purple-50" },
+  { id: "excel-to-pdf", title: "Excel to PDF", desc: "Convert .xlsx/.xls into a clean PDF", accept: ".xls,.xlsx,.csv", icon: FileSpreadsheet, color: "text-green-600", bg: "bg-green-50" },
+  { id: "pdf-compress", title: "PDF Size Reducer", desc: "Compress PDF for email & uploads", accept: ".pdf", icon: Minimize2, color: "text-orange-600", bg: "bg-orange-50" },
+  { id: "image-compress", title: "Image Size Reducer", desc: "Shrink JPG/PNG without quality loss", accept: "image/*", multiple: true, icon: ImageDown, color: "text-pink-600", bg: "bg-pink-50" },
 ];
 
 const Converter = () => {
@@ -65,6 +75,9 @@ const Converter = () => {
         case "word-to-pdf": await wordToPdf(files[0]); break;
         case "pdf-to-word": await pdfToWord(files[0]); break;
         case "pdf-to-image": await pdfToImage(files[0]); break;
+        case "excel-to-pdf": await excelToPdf(files[0]); break;
+        case "pdf-compress": await pdfCompress(files[0]); break;
+        case "image-compress": await imageCompress(files); break;
       }
       setDone(true);
       toast.success("Conversion complete — file downloaded!");
