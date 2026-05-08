@@ -171,6 +171,94 @@ const Converter = () => {
     }
   };
 
+  const excelToPdf = async (file: File) => {
+    const XLSX = await import("xlsx");
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: "array" });
+    const wrapper = document.createElement("div");
+    wrapper.style.cssText = "padding:24px;font-family:Arial,sans-serif;font-size:10pt;color:#111;background:#fff;width:1100px;";
+    wb.SheetNames.forEach((name, idx) => {
+      const ws = wb.Sheets[name];
+      const html = XLSX.utils.sheet_to_html(ws, { editable: false });
+      wrapper.insertAdjacentHTML("beforeend", `<h3 style="margin:16px 0 8px;font-size:14pt;">${name}</h3>${html}`);
+      if (idx < wb.SheetNames.length - 1) {
+        wrapper.insertAdjacentHTML("beforeend", '<div style="page-break-after:always"></div>');
+      }
+    });
+    wrapper.querySelectorAll("table").forEach((t) => {
+      (t as HTMLElement).style.cssText = "border-collapse:collapse;width:100%;font-size:9pt;";
+      t.querySelectorAll("td,th").forEach((c) => {
+        (c as HTMLElement).style.cssText = "border:1px solid #ccc;padding:4px 6px;";
+      });
+    });
+    document.body.appendChild(wrapper);
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+      await html2pdf().set({
+        margin: 8,
+        filename: file.name.replace(/\.(xlsx?|csv)$/i, ".pdf"),
+        image: { type: "jpeg", quality: 0.95 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+      }).from(wrapper).save();
+    } finally {
+      document.body.removeChild(wrapper);
+    }
+  };
+
+  const pdfCompress = async (file: File) => {
+    const pdfjs: any = await import("pdfjs-dist");
+    pdfjs.GlobalWorkerOptions.workerSrc = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url")).default;
+    const { jsPDF } = await import("jspdf");
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjs.getDocument({ data: buf }).promise;
+    const out = new jsPDF({ unit: "pt", format: "a4" });
+    const pageW = out.internal.pageSize.getWidth();
+    const pageH = out.internal.pageSize.getHeight();
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const page = await pdf.getPage(p);
+      const viewport = page.getViewport({ scale: 1.2 });
+      const canvas = document.createElement("canvas");
+      canvas.width = viewport.width; canvas.height = viewport.height;
+      const ctx = canvas.getContext("2d")!;
+      await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
+      const ratio = Math.min(pageW / viewport.width, pageH / viewport.height);
+      const w = viewport.width * ratio, h = viewport.height * ratio;
+      if (p > 1) out.addPage();
+      out.addImage(dataUrl, "JPEG", (pageW - w) / 2, (pageH - h) / 2, w, h, undefined, "FAST");
+    }
+    out.save(file.name.replace(/\.pdf$/i, "-compressed.pdf"));
+  };
+
+  const imageCompress = async (imgs: File[]) => {
+    for (const file of imgs) {
+      const dataUrl = await new Promise<string>((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result as string);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      });
+      const img = await new Promise<HTMLImageElement>((res, rej) => {
+        const im = new Image();
+        im.onload = () => res(im); im.onerror = rej; im.src = dataUrl;
+      });
+      const maxDim = 1920;
+      let w = img.width, h = img.height;
+      if (w > maxDim || h > maxDim) {
+        const r = Math.min(maxDim / w, maxDim / h);
+        w = Math.round(w * r); h = Math.round(h * r);
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0, w, h);
+      const blob = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b!), "image/jpeg", 0.7));
+      const base = file.name.replace(/\.[^.]+$/, "");
+      downloadBlob(blob, `${base}-compressed.jpg`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
