@@ -38,7 +38,7 @@ const Hero = () => {
             Recruiter-approved templates trusted by students and professionals. 100% free — no sign-up.
           </p>
 
-          <div className="flex justify-center px-4 sm:px-0">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 sm:px-0">
             <Button
               size="lg"
               className="w-full sm:w-auto h-14 sm:h-16 px-10 sm:px-12 text-base sm:text-lg font-bold rounded-xl shadow-elevated hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
@@ -46,6 +46,14 @@ const Hero = () => {
             >
               Build My Resume — Free
               <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto h-14 sm:h-16 px-8 sm:px-10 text-base sm:text-lg font-semibold rounded-xl border-border hover:bg-secondary transition-all duration-300"
+              onClick={() => navigate("/converter")}
+            >
+              Convert Files
             </Button>
           </div>
         </motion.div>
