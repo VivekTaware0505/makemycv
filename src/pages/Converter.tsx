@@ -1,13 +1,20 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, FileText, FileImage, Upload, Download, Loader2, CheckCircle, FileType } from "lucide-react";
+import { ArrowLeft, FileText, FileImage, Upload, Download, Loader2, CheckCircle, FileType, FileSpreadsheet, Minimize2, ImageDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 
-type ConverterId = "pdf-to-word" | "word-to-pdf" | "image-to-pdf" | "pdf-to-image";
+type ConverterId =
+  | "pdf-to-word"
+  | "word-to-pdf"
+  | "image-to-pdf"
+  | "pdf-to-image"
+  | "excel-to-pdf"
+  | "pdf-compress"
+  | "image-compress";
 
 interface ConverterTool {
   id: ConverterId;
@@ -25,6 +32,9 @@ const tools: ConverterTool[] = [
   { id: "word-to-pdf", title: "Word to PDF", desc: "Convert .doc/.docx to high-quality PDF", accept: ".doc,.docx", icon: FileText, color: "text-red-600", bg: "bg-red-50" },
   { id: "image-to-pdf", title: "Image to PDF", desc: "Combine JPG/PNG images into one PDF", accept: "image/*", multiple: true, icon: FileImage, color: "text-emerald-600", bg: "bg-emerald-50" },
   { id: "pdf-to-image", title: "PDF to Image", desc: "Export each PDF page as PNG image", accept: ".pdf", icon: FileImage, color: "text-purple-600", bg: "bg-purple-50" },
+  { id: "excel-to-pdf", title: "Excel to PDF", desc: "Convert .xlsx/.xls into a clean PDF", accept: ".xls,.xlsx,.csv", icon: FileSpreadsheet, color: "text-green-600", bg: "bg-green-50" },
+  { id: "pdf-compress", title: "PDF Size Reducer", desc: "Compress PDF for email & uploads", accept: ".pdf", icon: Minimize2, color: "text-orange-600", bg: "bg-orange-50" },
+  { id: "image-compress", title: "Image Size Reducer", desc: "Shrink JPG/PNG without quality loss", accept: "image/*", multiple: true, icon: ImageDown, color: "text-pink-600", bg: "bg-pink-50" },
 ];
 
 const Converter = () => {
@@ -65,6 +75,9 @@ const Converter = () => {
         case "word-to-pdf": await wordToPdf(files[0]); break;
         case "pdf-to-word": await pdfToWord(files[0]); break;
         case "pdf-to-image": await pdfToImage(files[0]); break;
+        case "excel-to-pdf": await excelToPdf(files[0]); break;
+        case "pdf-compress": await pdfCompress(files[0]); break;
+        case "image-compress": await imageCompress(files); break;
       }
       setDone(true);
       toast.success("Conversion complete — file downloaded!");
@@ -155,6 +168,94 @@ const Converter = () => {
       await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
       const blob = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b!), "image/png"));
       downloadBlob(blob, `${file.name.replace(/\.pdf$/i, "")}-page-${p}.png`);
+    }
+  };
+
+  const excelToPdf = async (file: File) => {
+    const XLSX = await import("xlsx");
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: "array" });
+    const wrapper = document.createElement("div");
+    wrapper.style.cssText = "padding:24px;font-family:Arial,sans-serif;font-size:10pt;color:#111;background:#fff;width:1100px;";
+    wb.SheetNames.forEach((name, idx) => {
+      const ws = wb.Sheets[name];
+      const html = XLSX.utils.sheet_to_html(ws, { editable: false });
+      wrapper.insertAdjacentHTML("beforeend", `<h3 style="margin:16px 0 8px;font-size:14pt;">${name}</h3>${html}`);
+      if (idx < wb.SheetNames.length - 1) {
+        wrapper.insertAdjacentHTML("beforeend", '<div style="page-break-after:always"></div>');
+      }
+    });
+    wrapper.querySelectorAll("table").forEach((t) => {
+      (t as HTMLElement).style.cssText = "border-collapse:collapse;width:100%;font-size:9pt;";
+      t.querySelectorAll("td,th").forEach((c) => {
+        (c as HTMLElement).style.cssText = "border:1px solid #ccc;padding:4px 6px;";
+      });
+    });
+    document.body.appendChild(wrapper);
+    try {
+      const html2pdf = (await import("html2pdf.js")).default;
+      await html2pdf().set({
+        margin: 8,
+        filename: file.name.replace(/\.(xlsx?|csv)$/i, ".pdf"),
+        image: { type: "jpeg", quality: 0.95 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+      }).from(wrapper).save();
+    } finally {
+      document.body.removeChild(wrapper);
+    }
+  };
+
+  const pdfCompress = async (file: File) => {
+    const pdfjs: any = await import("pdfjs-dist");
+    pdfjs.GlobalWorkerOptions.workerSrc = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url")).default;
+    const { jsPDF } = await import("jspdf");
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjs.getDocument({ data: buf }).promise;
+    const out = new jsPDF({ unit: "pt", format: "a4" });
+    const pageW = out.internal.pageSize.getWidth();
+    const pageH = out.internal.pageSize.getHeight();
+    for (let p = 1; p <= pdf.numPages; p++) {
+      const page = await pdf.getPage(p);
+      const viewport = page.getViewport({ scale: 1.2 });
+      const canvas = document.createElement("canvas");
+      canvas.width = viewport.width; canvas.height = viewport.height;
+      const ctx = canvas.getContext("2d")!;
+      await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
+      const ratio = Math.min(pageW / viewport.width, pageH / viewport.height);
+      const w = viewport.width * ratio, h = viewport.height * ratio;
+      if (p > 1) out.addPage();
+      out.addImage(dataUrl, "JPEG", (pageW - w) / 2, (pageH - h) / 2, w, h, undefined, "FAST");
+    }
+    out.save(file.name.replace(/\.pdf$/i, "-compressed.pdf"));
+  };
+
+  const imageCompress = async (imgs: File[]) => {
+    for (const file of imgs) {
+      const dataUrl = await new Promise<string>((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result as string);
+        r.onerror = rej;
+        r.readAsDataURL(file);
+      });
+      const img = await new Promise<HTMLImageElement>((res, rej) => {
+        const im = new Image();
+        im.onload = () => res(im); im.onerror = rej; im.src = dataUrl;
+      });
+      const maxDim = 1920;
+      let w = img.width, h = img.height;
+      if (w > maxDim || h > maxDim) {
+        const r = Math.min(maxDim / w, maxDim / h);
+        w = Math.round(w * r); h = Math.round(h * r);
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(img, 0, 0, w, h);
+      const blob = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b!), "image/jpeg", 0.7));
+      const base = file.name.replace(/\.[^.]+$/, "");
+      downloadBlob(blob, `${base}-compressed.jpg`);
     }
   };
 

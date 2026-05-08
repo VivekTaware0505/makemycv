@@ -1,12 +1,15 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { FileText, FileType, FileImage, ArrowRight } from "lucide-react";
+import { FileText, FileType, FileImage, ArrowRight, FileSpreadsheet, Minimize2, ImageDown } from "lucide-react";
 
 const tools = [
   { id: "pdf-to-word", title: "PDF to Word", desc: "Editable .doc file", icon: FileType, color: "text-blue-600", bg: "bg-blue-50" },
   { id: "word-to-pdf", title: "Word to PDF", desc: "High-quality PDF", icon: FileText, color: "text-red-600", bg: "bg-red-50" },
+  { id: "excel-to-pdf", title: "Excel to PDF", desc: "XLSX → clean PDF", icon: FileSpreadsheet, color: "text-green-600", bg: "bg-green-50" },
   { id: "image-to-pdf", title: "Image to PDF", desc: "JPG/PNG → PDF", icon: FileImage, color: "text-emerald-600", bg: "bg-emerald-50" },
   { id: "pdf-to-image", title: "PDF to Image", desc: "Each page as PNG", icon: FileImage, color: "text-purple-600", bg: "bg-purple-50" },
+  { id: "pdf-compress", title: "PDF Reducer", desc: "Shrink PDF size", icon: Minimize2, color: "text-orange-600", bg: "bg-orange-50" },
+  { id: "image-compress", title: "Image Reducer", desc: "Compress JPG/PNG", icon: ImageDown, color: "text-pink-600", bg: "bg-pink-50" },
 ];
 
 const ConverterTools = () => {
@@ -26,7 +29,7 @@ const ConverterTools = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 max-w-5xl mx-auto">
           {tools.map((t, i) => {
             const Icon = t.icon;
             return (
