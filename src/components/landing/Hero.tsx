@@ -24,36 +24,28 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-muted-foreground text-xs sm:text-sm mb-6 sm:mb-8 border border-border shadow-card">
-            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>Trusted by 10,000+ professionals</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-muted-foreground text-xs sm:text-sm mb-8 sm:mb-10 border border-border shadow-card">
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+            <span><span className="font-semibold text-foreground">1000+ resumes</span> created · ATS optimized</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-foreground mb-4 sm:mb-6 max-w-5xl mx-auto leading-[1.1]">
-            Build Your Perfect
-            <span className="block text-primary">Resume Today</span>
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight text-foreground mb-6 sm:mb-8 max-w-5xl mx-auto leading-[1.05]">
+            Create an ATS-Friendly
+            <span className="block text-primary mt-2">Resume in 5 Minutes</span>
           </h1>
 
-          <p className="text-sm sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-2">
-            ATS-optimized, recruiter-approved templates that get you hired. Build for free, download instantly.
+          <p className="text-base sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 sm:mb-12 leading-relaxed px-2 font-light">
+            Recruiter-approved templates trusted by students and professionals. 100% free — no sign-up.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 sm:px-0">
+          <div className="flex justify-center px-4 sm:px-0">
             <Button
               size="lg"
-              className="w-full sm:w-auto h-12 sm:h-14 px-8 sm:px-10 text-sm sm:text-base font-bold rounded-xl shadow-elevated hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
+              className="w-full sm:w-auto h-14 sm:h-16 px-10 sm:px-12 text-base sm:text-lg font-bold rounded-xl shadow-elevated hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1"
               onClick={() => navigate("/builder")}
             >
-              Start Building — It's Free
-              <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base font-semibold rounded-xl border-border hover:bg-secondary transition-all duration-300"
-              onClick={() => navigate("/templates")}
-            >
-              Browse Templates
+              Build My Resume — Free
+              <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </div>
         </motion.div>
