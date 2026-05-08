@@ -57,10 +57,10 @@ const Hero = () => {
           className="mt-10 sm:mt-16 grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-3 sm:gap-6 md:gap-10 text-xs sm:text-sm text-muted-foreground px-4 sm:px-0"
         >
           {[
-            { text: "Free to Build", emoji: "✅" },
-            { text: "ATS Optimized", emoji: "📊" },
-            { text: "14+ Templates", emoji: "📄" },
-            { text: "Instant Download", emoji: "⚡" },
+            { text: "1000+ resumes created", emoji: "🚀" },
+            { text: "ATS optimized", emoji: "📊" },
+            { text: "Students & professionals", emoji: "🎓" },
+            { text: "100% free download", emoji: "⚡" },
           ].map(({ text, emoji }) => (
             <div key={text} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border shadow-card">
               <span>{emoji}</span>
