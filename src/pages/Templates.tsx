@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Briefcase, Code, Landmark, HeartPulse, Megaphone, Wrench, Palette, LayoutGrid, Crown, Scale, GraduationCap, ArrowRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,13 @@ const Templates = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Resume Templates - MakeMyCV</title>
+        <meta name="description" content="Browse 14+ industry-specific, ATS-optimized resume templates. Professional designs for every career. Free to use." />
+        <link rel="canonical" href="https://makemycv.lovable.app/templates" />
+        <meta property="og:title" content="Resume Templates - MakeMyCV" />
+        <meta property="og:url" content="https://makemycv.lovable.app/templates" />
+      </Helmet>
       <Navbar />
 
       <div className="pt-24 pb-16">
