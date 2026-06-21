@@ -20,9 +20,6 @@ const DownloadBar = ({ data, template, onDownload }: Props) => {
   const trackDownload = async (format: "pdf" | "word") => {
     try {
       await supabase.from("resume_downloads").insert({
-        user_name: data.name || null,
-        user_email: data.email || null,
-        user_phone: data.phone || null,
         format,
         template,
       });

@@ -20,27 +20,18 @@ export type Database = {
           format: string
           id: string
           template: string | null
-          user_email: string | null
-          user_name: string | null
-          user_phone: string | null
         }
         Insert: {
           created_at?: string
           format: string
           id?: string
           template?: string | null
-          user_email?: string | null
-          user_name?: string | null
-          user_phone?: string | null
         }
         Update: {
           created_at?: string
           format?: string
           id?: string
           template?: string | null
-          user_email?: string | null
-          user_name?: string | null
-          user_phone?: string | null
         }
         Relationships: []
       }
