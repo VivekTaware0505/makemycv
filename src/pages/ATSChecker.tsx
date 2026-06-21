@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Upload, FileText, CheckCircle, AlertTriangle, TrendingUp, Sparkles, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
