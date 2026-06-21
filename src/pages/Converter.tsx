@@ -262,6 +262,13 @@ const Converter = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>PDF &amp; Word Converter - MakeMyCV</title>
+        <meta name="description" content="Convert PDF to Word, Word to PDF, images to PDF, and more. Free browser-based file converter with no upload required." />
+        <link rel="canonical" href="https://makemycv.lovable.app/converter" />
+        <meta property="og:title" content="PDF &amp; Word Converter - MakeMyCV" />
+        <meta property="og:url" content="https://makemycv.lovable.app/converter" />
+      </Helmet>
       <Navbar />
       <main className="flex-1 pt-20 sm:pt-24 pb-16">
         <div className="container mx-auto px-4 sm:px-6 max-w-6xl">
