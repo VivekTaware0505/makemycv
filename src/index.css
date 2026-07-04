@@ -15,8 +15,12 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 8%;
 
-    --primary: 217 91% 60%;
+    --primary: 262 83% 58%;
     --primary-foreground: 0 0% 100%;
+    --primary-glow: 250 84% 66%;
+    --brand-blue: 221 83% 53%;
+    --brand-purple: 262 83% 58%;
+    --brand-emerald: 160 84% 39%;
 
     --secondary: 220 14% 96%;
     --secondary-foreground: 0 0% 9%;
@@ -32,20 +36,24 @@
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 0 0% 9%;
+    --ring: 262 83% 58%;
 
     --radius: 0.75rem;
 
-    --success: 142 71% 45%;
+    --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(220 14% 96%) 50%, hsl(0 0% 98%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 14% 98%) 100%);
+    --gradient-hero: radial-gradient(ellipse at top left, hsl(262 83% 58% / 0.08) 0%, transparent 50%), radial-gradient(ellipse at bottom right, hsl(160 84% 39% / 0.06) 0%, transparent 50%), linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(250 40% 99%) 100%);
+    --gradient-brand: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(262 83% 58%) 100%);
+    --gradient-brand-soft: linear-gradient(135deg, hsl(221 83% 53% / 0.1) 0%, hsl(262 83% 58% / 0.1) 100%);
+    --gradient-emerald: linear-gradient(135deg, hsl(160 84% 39%) 0%, hsl(172 76% 42%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(250 40% 99%) 100%);
     --shadow-card: 0 1px 3px 0 rgba(0,0,0,0.05), 0 1px 2px -1px rgba(0,0,0,0.05);
-    --shadow-card-hover: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
-    --shadow-elevated: 0 20px 50px -12px rgba(0,0,0,0.12);
+    --shadow-card-hover: 0 10px 25px -5px rgba(124,58,237,0.12), 0 8px 10px -6px rgba(0,0,0,0.04);
+    --shadow-elevated: 0 25px 60px -15px rgba(124,58,237,0.25);
+    --shadow-glow: 0 0 40px hsl(262 83% 58% / 0.35);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -105,6 +113,24 @@
   }
   .gradient-card {
     background: var(--gradient-card);
+  }
+  .gradient-brand {
+    background: var(--gradient-brand);
+  }
+  .gradient-brand-soft {
+    background: var(--gradient-brand-soft);
+  }
+  .gradient-emerald {
+    background: var(--gradient-emerald);
+  }
+  .text-gradient-brand {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
   }
   .shadow-card {
     box-shadow: var(--shadow-card);
