@@ -1,8 +1,12 @@
 import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
+import Stats from "@/components/landing/Stats";
+import TrustBadges from "@/components/landing/TrustBadges";
 import Features from "@/components/landing/Features";
 import ConverterTools from "@/components/landing/ConverterTools";
+import Testimonials from "@/components/landing/Testimonials";
+import FAQ from "@/components/landing/FAQ";
 import Pricing from "@/components/landing/Pricing";
 import Footer from "@/components/landing/Footer";
 
@@ -17,8 +21,12 @@ const Index = () => (
     </Helmet>
     <Navbar />
     <Hero />
+    <Stats />
+    <TrustBadges />
     <Features />
     <ConverterTools />
+    <Testimonials />
+    <FAQ />
     <Pricing />
     <Footer />
   </div>
