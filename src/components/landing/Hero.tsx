@@ -59,7 +59,7 @@ const Hero = () => {
               ))}
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3">
+            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 flex-wrap">
               <Button
                 size="lg"
                 className="w-full sm:w-auto h-14 px-8 text-base font-bold rounded-xl gradient-brand text-primary-foreground shadow-elevated hover:shadow-glow transition-all duration-300 hover:-translate-y-1 border-0"
@@ -67,6 +67,14 @@ const Hero = () => {
               >
                 Build My Resume — Free
                 <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+              <Button
+                size="lg"
+                className="w-full sm:w-auto h-14 px-6 text-base font-semibold rounded-xl bg-secondary text-secondary-foreground hover:bg-secondary/80 border-2 border-primary/30 hover:border-primary/60 transition-all"
+                onClick={() => navigate("/interview-prep")}
+              >
+                <Sparkles className="mr-2 w-5 h-5 text-primary" />
+                Interview Prep
               </Button>
               <Button
                 variant="outline"
