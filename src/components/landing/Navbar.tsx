@@ -11,6 +11,7 @@ const Navbar = () => {
   const navLinks = [
     { label: "Templates", action: () => navigate("/templates") },
     { label: "ATS Checker", action: () => navigate("/ats-checker") },
+    { label: "Interview Prep", action: () => navigate("/interview-prep") },
     { label: "Converter", action: () => navigate("/converter") },
     { label: "Pricing", action: () => document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" }) },
   ];

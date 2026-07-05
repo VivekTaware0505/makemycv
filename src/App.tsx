@@ -8,6 +8,7 @@ import Builder from "./pages/Builder.tsx";
 import Templates from "./pages/Templates.tsx";
 import ATSChecker from "./pages/ATSChecker.tsx";
 import Converter from "./pages/Converter.tsx";
+import InterviewPrep from "./pages/InterviewPrep.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/templates" element={<Templates />} />
           <Route path="/ats-checker" element={<ATSChecker />} />
           <Route path="/converter" element={<Converter />} />
+          <Route path="/interview-prep" element={<InterviewPrep />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

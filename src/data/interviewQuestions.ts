@@ -156,8 +156,8 @@ export const interviewRoles: RoleBank[] = [
 ];
 
 export const questionTagColors: Record<InterviewQuestion["tag"], string> = {
-  behavioral: "bg-brand-purple/10 text-brand-purple border-brand-purple/20",
-  technical: "bg-brand-blue/10 text-brand-blue border-brand-blue/20",
-  situational: "bg-brand-emerald/10 text-brand-emerald border-brand-emerald/20",
+  behavioral: "bg-primary/10 text-primary border-primary/20",
+  technical: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+  situational: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
   hr: "bg-orange-500/10 text-orange-600 border-orange-500/20",
 };
