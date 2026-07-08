@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ChevronDown, Loader2, MessageSquare, BookOpen } from "lucide-react";
+import { Sparkles, Loader2, MessageSquare, BookOpen, Lightbulb, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
@@ -9,6 +9,7 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { interviewRoles, questionTagColors, type InterviewQuestion } from "@/data/interviewQuestions";
+import { extraQuestionsByRole } from "@/data/interviewQuestionsExtra";
 
 const InterviewPrep = () => {
   const [activeRoleId, setActiveRoleId] = useState(interviewRoles[0].id);
@@ -19,9 +20,13 @@ const InterviewPrep = () => {
     () => interviewRoles.find((r) => r.id === activeRoleId)!,
     [activeRoleId]
   );
+  const baseQuestions = useMemo(
+    () => [...activeRole.questions, ...(extraQuestionsByRole[activeRoleId] || [])],
+    [activeRole, activeRoleId]
+  );
   const allQuestions = useMemo(
-    () => [...activeRole.questions, ...(extra[activeRoleId] || [])],
-    [activeRole, extra, activeRoleId]
+    () => [...baseQuestions, ...(extra[activeRoleId] || [])],
+    [baseQuestions, extra, activeRoleId]
   );
 
   const generateMore = async () => {
@@ -124,7 +129,7 @@ const InterviewPrep = () => {
                     <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1.5">
                         <BookOpen className="w-3.5 h-3.5" />
-                        {activeRole.questions.length} curated
+                        {baseQuestions.length} curated
                       </span>
                       {(extra[activeRoleId]?.length ?? 0) > 0 && (
                         <span className="flex items-center gap-1.5 text-primary">
@@ -155,7 +160,7 @@ const InterviewPrep = () => {
 
                 <Accordion type="single" collapsible className="space-y-3">
                   {allQuestions.map((item, i) => {
-                    const isAi = i >= activeRole.questions.length;
+                    const isAi = i >= baseQuestions.length;
                     return (
                       <AccordionItem
                         key={`${activeRoleId}-${i}`}
@@ -180,6 +185,11 @@ const InterviewPrep = () => {
                                     AI
                                   </span>
                                 )}
+                                {(item.detailedAnswer || item.tips?.length) && (
+                                  <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-md border border-emerald-500/20 bg-emerald-500/5 text-emerald-600">
+                                    In-depth
+                                  </span>
+                                )}
                               </div>
                               <p className="text-sm md:text-base font-semibold text-foreground leading-snug">
                                 {item.q}
@@ -188,9 +198,43 @@ const InterviewPrep = () => {
                           </div>
                         </AccordionTrigger>
                         <AccordionContent className="pb-5 pt-1">
-                          <div className="flex items-start gap-3 pl-9">
-                            <MessageSquare className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" />
-                            <p className="text-sm text-muted-foreground leading-relaxed">{item.a}</p>
+                          <div className="pl-9 space-y-4">
+                            <div>
+                              <div className="flex items-center gap-2 mb-1.5 text-xs font-semibold uppercase tracking-wide text-emerald-600">
+                                <MessageSquare className="w-3.5 h-3.5" />
+                                Quick answer
+                              </div>
+                              <p className="text-sm text-muted-foreground leading-relaxed">{item.a}</p>
+                            </div>
+
+                            {item.detailedAnswer && (
+                              <div className="rounded-lg border border-border bg-muted/30 p-4">
+                                <div className="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-wide text-primary">
+                                  <BookOpen className="w-3.5 h-3.5" />
+                                  Detailed explanation
+                                </div>
+                                <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
+                                  {item.detailedAnswer}
+                                </p>
+                              </div>
+                            )}
+
+                            {item.tips && item.tips.length > 0 && (
+                              <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
+                                <div className="flex items-center gap-2 mb-2 text-xs font-semibold uppercase tracking-wide text-amber-600">
+                                  <Lightbulb className="w-3.5 h-3.5" />
+                                  Pro tips & suggestions
+                                </div>
+                                <ul className="space-y-1.5">
+                                  {item.tips.map((tip, ti) => (
+                                    <li key={ti} className="flex items-start gap-2 text-sm text-foreground/80 leading-relaxed">
+                                      <CheckCircle2 className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                                      <span>{tip}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
                           </div>
                         </AccordionContent>
                       </AccordionItem>
