@@ -2,6 +2,8 @@ export interface InterviewQuestion {
   q: string;
   a: string;
   tag: "behavioral" | "technical" | "situational" | "hr";
+  detailedAnswer?: string;
+  tips?: string[];
 }
 
 export interface RoleBank {
