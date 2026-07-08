@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const systemPrompt = `You are an expert interview coach. Generate realistic, high-quality interview questions with concise model answers for the specified job role. Return STRICT JSON only.`;
+    const systemPrompt = `You are a senior interview coach. Generate realistic, high-quality interview questions with a concise model answer, a detailed multi-paragraph explanation, and 3-4 pro tips. Return STRICT JSON only.`;
 
     const userPrompt = `Role: ${role}
 Existing questions to AVOID duplicating:
@@ -32,10 +32,12 @@ ${existingQuestions.slice(0, 30).map((q: string, i: number) => `${i + 1}. ${q}`)
 
 Generate ${count} NEW interview questions. Each must include:
 - "q": the interview question
-- "a": a strong 2-4 sentence model answer / how to approach it
+- "a": a strong 2-3 sentence quick model answer
+- "detailedAnswer": a longer, in-depth explanation (4-8 sentences) walking through frameworks, reasoning, examples, and edge cases. Use \\n for paragraph breaks if needed.
+- "tips": an array of 3-4 short, actionable pro tips or suggestions (each 1 sentence) — what to emphasize, common mistakes to avoid, phrases to use.
 - "tag": one of "behavioral" | "technical" | "situational" | "hr"
 
-Return JSON: { "questions": [ { "q": "...", "a": "...", "tag": "..." } ] }`;
+Return JSON: { "questions": [ { "q": "...", "a": "...", "detailedAnswer": "...", "tips": ["...", "..."], "tag": "..." } ] }`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
