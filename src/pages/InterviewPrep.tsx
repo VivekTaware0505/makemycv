@@ -10,6 +10,7 @@ import Footer from "@/components/landing/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { interviewRoles, questionTagColors, type InterviewQuestion } from "@/data/interviewQuestions";
 import { extraQuestionsByRole } from "@/data/interviewQuestionsExtra";
+import { companyQuestionsByRole } from "@/data/interviewQuestionsCompany";
 
 const InterviewPrep = () => {
   const [activeRoleId, setActiveRoleId] = useState(interviewRoles[0].id);
@@ -21,7 +22,11 @@ const InterviewPrep = () => {
     [activeRoleId]
   );
   const baseQuestions = useMemo(
-    () => [...activeRole.questions, ...(extraQuestionsByRole[activeRoleId] || [])],
+    () => [
+      ...activeRole.questions,
+      ...(extraQuestionsByRole[activeRoleId] || []),
+      ...(companyQuestionsByRole[activeRoleId] || []),
+    ],
     [activeRole, activeRoleId]
   );
   const allQuestions = useMemo(
