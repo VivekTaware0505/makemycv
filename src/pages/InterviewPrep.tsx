@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Loader2, MessageSquare, BookOpen, Lightbulb, CheckCircle2, Lock, ShieldCheck, FileText, Building2, Hash, Stamp, EyeOff, ScrollText } from "lucide-react";
+import { Sparkles, Loader2, MessageSquare, BookOpen, Lightbulb, CheckCircle2, Lock, ShieldCheck, FileText, Building2, Hash, EyeOff, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
