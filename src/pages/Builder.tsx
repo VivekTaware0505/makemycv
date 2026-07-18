@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Pencil, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResumeData, defaultResumeData } from "@/types/resume";
 import { TemplateId, templates } from "@/types/templates";
@@ -19,6 +19,7 @@ const Builder = () => {
 
   const [data, setData] = useState<ResumeData>(defaultResumeData);
   const [template, setTemplate] = useState<TemplateId>(initialTemplate);
+  const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
 
   const { score, suggestions } = useMemo(() => calculateATSScore(data), [data]);
 
@@ -105,15 +106,35 @@ const Builder = () => {
       </div>
 
       {/* Split layout */}
+      {/* Mobile tab switcher */}
+      <div className="lg:hidden sticky top-16 z-20 flex items-center gap-2 p-3 bg-background border-b border-border">
+        <button
+          onClick={() => setMobileView("edit")}
+          className={`flex-1 flex items-center justify-center gap-1.5 h-10 rounded-xl text-sm font-semibold transition-all ${
+            mobileView === "edit" ? "gradient-brand text-primary-foreground shadow-card" : "bg-secondary text-muted-foreground"
+          }`}
+        >
+          <Pencil className="w-4 h-4" /> Edit
+        </button>
+        <button
+          onClick={() => setMobileView("preview")}
+          className={`flex-1 flex items-center justify-center gap-1.5 h-10 rounded-xl text-sm font-semibold transition-all ${
+            mobileView === "preview" ? "gradient-brand text-primary-foreground shadow-card" : "bg-secondary text-muted-foreground"
+          }`}
+        >
+          <Eye className="w-4 h-4" /> Preview
+        </button>
+      </div>
+
       <div className="flex flex-col lg:flex-row">
         {/* Left: Form */}
-        <div className="w-full lg:w-[45%] border-r border-border">
+        <div className={`w-full lg:w-[45%] lg:border-r border-border ${mobileView === "edit" ? "block" : "hidden lg:block"}`}>
           <ResumeForm data={data} onChange={setData} />
         </div>
 
         {/* Right: Preview + ATS + Download */}
-        <div className="w-full lg:w-[55%] bg-secondary/30 flex flex-col">
-          <div className="flex-1 p-6 space-y-4 max-h-[calc(100vh-4rem-5rem)] overflow-y-auto">
+        <div className={`w-full lg:w-[55%] bg-secondary/30 flex-col ${mobileView === "preview" ? "flex" : "hidden lg:flex"}`}>
+          <div className="flex-1 p-4 lg:p-6 space-y-4 lg:max-h-[calc(100vh-4rem-5rem)] lg:overflow-y-auto">
             {currentTemplate && (
               <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-card border border-border text-xs text-muted-foreground">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ background: currentTemplate.accentColor }} />
@@ -136,7 +157,7 @@ const Builder = () => {
           </div>
 
           {/* Sticky download bar */}
-          <div className="sticky bottom-0 p-4 bg-background/90 backdrop-blur-md border-t border-border">
+          <div className="sticky bottom-0 p-3 lg:p-4 bg-background/95 backdrop-blur-md border-t border-border" style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}>
             <DownloadBar data={data} template={template} onDownload={handleDownload} />
           </div>
         </div>
