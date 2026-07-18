@@ -10,6 +10,7 @@ import ATSChecker from "./pages/ATSChecker.tsx";
 import Converter from "./pages/Converter.tsx";
 import InterviewPrep from "./pages/InterviewPrep.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import MobileBottomNav from "./components/landing/MobileBottomNav";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/interview-prep" element={<InterviewPrep />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <MobileBottomNav />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
