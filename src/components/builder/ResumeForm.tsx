@@ -5,6 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2, Linkedin, Globe, FolderKanban, Award, Camera, Briefcase } from "lucide-react";
+import { Sparkles, Eraser, Lightbulb } from "lucide-react";
+import { getSampleResume } from "@/lib/sampleResumes";
+import { defaultResumeData } from "@/types/resume";
 
 interface Props {
   data: ResumeData;
@@ -92,6 +95,30 @@ const ResumeForm = ({ data, onChange }: Props) => {
 
   return (
     <div className="space-y-8 p-6 overflow-y-auto max-h-[calc(100vh-8rem)]">
+      {/* Quick actions */}
+      <div className="flex flex-wrap gap-2 -mb-4">
+        <button
+          onClick={() => onChange({ ...getSampleResume(data.field), photo: data.photo })}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold gradient-brand text-primary-foreground shadow-card hover:shadow-md transition-all"
+        >
+          <Sparkles className="w-3.5 h-3.5" /> Load example for {fieldLabels[data.field]}
+        </button>
+        <button
+          onClick={() => onChange({ ...defaultResumeData, field: data.field, showProjects: data.showProjects })}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-border text-muted-foreground hover:text-foreground hover:border-primary/40 transition-all"
+        >
+          <Eraser className="w-3.5 h-3.5" /> Clear
+        </button>
+      </div>
+
+      {/* Tip banner */}
+      <div className="flex items-start gap-2.5 p-3 rounded-xl bg-primary/5 border border-primary/20">
+        <Lightbulb className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+        <p className="text-xs text-foreground/80 leading-relaxed">
+          <span className="font-semibold text-foreground">Pro tip:</span> Use action verbs like <em>led, built, reduced, launched</em> and quantify impact with numbers (%, ₹, users) — recruiters spend just 7 seconds per resume.
+        </p>
+      </div>
+
       {/* Field / Domain Selection */}
       <div>
         <h2 className="text-lg font-semibold text-foreground mb-2 flex items-center gap-2">
