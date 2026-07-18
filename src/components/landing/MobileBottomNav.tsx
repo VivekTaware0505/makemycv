@@ -13,6 +13,9 @@ const MobileBottomNav = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
+  // Hide on Builder — that page has its own sticky download bar
+  if (pathname.startsWith("/builder")) return null;
+
   return (
     <nav
       className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur-xl border-t border-border safe-bottom"
