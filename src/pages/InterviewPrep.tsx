@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Loader2, MessageSquare, BookOpen, Lightbulb, CheckCircle2, Lock, ShieldCheck, FileText, Building2, Hash } from "lucide-react";
+import { Sparkles, Loader2, MessageSquare, BookOpen, Lightbulb, CheckCircle2, Lock, ShieldCheck, FileText, Building2, Hash, EyeOff, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
@@ -77,22 +77,32 @@ const InterviewPrep = () => {
       <Navbar />
 
       <div className="pt-24 pb-16">
-        <div className="container mx-auto px-6">
+        {/* Classified backdrop */}
+        <div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 opacity-[0.035] dark:opacity-[0.06]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(45deg, currentColor 0 1px, transparent 1px 22px), repeating-linear-gradient(-45deg, currentColor 0 1px, transparent 1px 22px)",
+            color: "hsl(var(--foreground))",
+          }}
+        />
+        <div className="container mx-auto px-4 sm:px-6 relative">
           {/* MNC-style confidential document header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-8 max-w-2xl mx-auto"
+            className="text-center mb-8 max-w-3xl mx-auto"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/5 dark:bg-white/5 border border-slate-900/10 dark:border-white/10 text-[11px] font-semibold tracking-[0.15em] text-slate-700 dark:text-slate-300 mb-4 uppercase">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/10 border border-red-600/30 text-[11px] font-semibold tracking-[0.2em] text-red-700 dark:text-red-400 mb-4 uppercase">
               <Lock className="w-3 h-3" />
-              Confidential · Interview Playbook · {interviewRoles.length} Roles
+              Top Secret · Interview Playbook · {interviewRoles.length} Roles
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-3">
               Insider <span className="text-gradient-brand">interview intel</span>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground">
-              Actual questions sourced from Amazon, Google, TCS, Infosys, Deloitte and more — with model answers, in-depth breakdowns, and pro tips.
+              Real questions sourced from Amazon, Google, TCS, Infosys, Deloitte and more — declassified, with deep-research answers, STAR breakdowns and hiring-manager tips.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 mt-4 text-[11px] text-muted-foreground">
               <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Verified from real interviews</span>
@@ -132,8 +142,14 @@ const InterviewPrep = () => {
                 transition={{ duration: 0.2 }}
               >
                 {/* Confidential document header card */}
-                <div className="relative mb-6 rounded-2xl border border-border bg-card overflow-hidden shadow-card">
+                <div className="relative mb-6 rounded-2xl border-2 border-dashed border-red-600/30 bg-card overflow-hidden shadow-elevated">
                   <div className="absolute inset-x-0 top-0 h-1 gradient-brand" />
+                  {/* Red classified stamp */}
+                  <div className="absolute -right-6 top-6 rotate-12 select-none pointer-events-none">
+                    <div className="border-[3px] border-red-600/70 text-red-600/80 px-3 py-1 text-[10px] font-black tracking-[0.35em] rounded-sm">
+                      CLASSIFIED
+                    </div>
+                  </div>
                   <div className="px-5 pt-5 pb-4 border-b border-border/60 bg-gradient-to-br from-muted/40 to-transparent">
                     <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-3 flex-wrap gap-2">
                       <span className="inline-flex items-center gap-1.5"><Lock className="w-3 h-3" /> Confidential — For Candidate Use</span>
@@ -195,11 +211,13 @@ const InterviewPrep = () => {
                       <AccordionItem
                         key={`${activeRoleId}-${i}`}
                         value={`q-${i}`}
-                        className="border border-border rounded-xl bg-card px-5 shadow-card data-[state=open]:shadow-card-hover data-[state=open]:border-primary/30 transition-all"
+                        className="relative border border-border rounded-xl bg-card px-5 shadow-card data-[state=open]:shadow-elevated data-[state=open]:border-primary/40 transition-all overflow-hidden"
                       >
+                        {/* left classified spine */}
+                        <span className="absolute left-0 top-0 bottom-0 w-1 gradient-brand opacity-0 data-[state=open]:opacity-100" />
                         <AccordionTrigger className="hover:no-underline py-4">
                           <div className="flex items-start gap-3 text-left flex-1 pr-2">
-                            <span className="mt-0.5 flex items-center justify-center w-8 h-7 rounded-md gradient-brand-soft text-primary text-[11px] font-bold font-mono shrink-0 border border-primary/10">
+                            <span className="mt-0.5 flex items-center justify-center w-9 h-8 rounded-md gradient-brand text-primary-foreground text-[11px] font-bold font-mono shrink-0 shadow-sm">
                               Q{String(i + 1).padStart(2, "0")}
                             </span>
                             <div className="flex-1">
@@ -210,7 +228,7 @@ const InterviewPrep = () => {
                                   {item.tag}
                                 </span>
                                 {company && (
-                                  <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-md border border-slate-900/15 bg-slate-900/5 text-slate-700 dark:text-slate-300 dark:border-white/15 dark:bg-white/5 flex items-center gap-1">
+                                  <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-md border border-red-600/25 bg-red-600/5 text-red-700 dark:text-red-400 flex items-center gap-1">
                                     <Building2 className="w-2.5 h-2.5" />
                                     Asked at {company}
                                   </span>
@@ -222,49 +240,55 @@ const InterviewPrep = () => {
                                   </span>
                                 )}
                                 {(item.detailedAnswer || item.tips?.length) && (
-                                  <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-md border border-emerald-500/20 bg-emerald-500/5 text-emerald-600">
-                                    In-depth
+                                  <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide rounded-md border border-emerald-500/25 bg-emerald-500/5 text-emerald-600 flex items-center gap-1">
+                                    <ScrollText className="w-2.5 h-2.5" /> Deep Research
                                   </span>
                                 )}
                               </div>
-                              <p className="text-sm md:text-base font-semibold text-foreground leading-snug">
+                              <p className="text-[15px] md:text-lg font-semibold text-foreground leading-snug">
                                 {questionText}
                               </p>
                             </div>
                           </div>
                         </AccordionTrigger>
-                        <AccordionContent className="pb-5 pt-1">
-                          <div className="pl-10 space-y-4">
-                            <div className="rounded-lg border-l-4 border-emerald-500 bg-emerald-500/5 pl-4 pr-3 py-3">
-                              <div className="flex items-center gap-2 mb-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-emerald-700 dark:text-emerald-400">
+                        <AccordionContent className="pb-6 pt-2">
+                          <div className="pl-11 space-y-5">
+                            {/* Classification banner */}
+                            <div className="flex items-center justify-between text-[9px] font-mono uppercase tracking-[0.25em] text-muted-foreground/70 border-y border-dashed border-border py-1">
+                              <span className="flex items-center gap-1.5"><EyeOff className="w-3 h-3" /> Declassified for Candidate</span>
+                              <span>REF · {activeRoleId.slice(0,3).toUpperCase()}-{String(i + 1).padStart(3, "0")}</span>
+                            </div>
+
+                            <div className="rounded-lg border-l-4 border-emerald-500 bg-emerald-500/5 pl-4 pr-4 py-4">
+                              <div className="flex items-center gap-2 mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-700 dark:text-emerald-400">
                                 <MessageSquare className="w-3.5 h-3.5" />
-                                Model Answer · Concise
+                                Model Answer · Recruiter-Ready
                               </div>
-                              <p className="text-sm text-foreground/90 leading-relaxed">{item.a}</p>
+                              <p className="text-[15px] text-foreground leading-[1.75]">{item.a}</p>
                             </div>
 
                             {item.detailedAnswer && (
-                              <div className="rounded-lg border border-primary/15 bg-primary/[0.03] p-4">
-                                <div className="flex items-center gap-2 mb-2 text-[11px] font-bold uppercase tracking-[0.12em] text-primary">
+                              <div className="rounded-lg border border-primary/20 bg-primary/[0.04] p-5">
+                                <div className="flex items-center gap-2 mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-primary">
                                   <BookOpen className="w-3.5 h-3.5" />
-                                  In-depth Breakdown · STAR Framework
+                                  Deep-Research Breakdown · STAR Framework
                                 </div>
-                                <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
+                                <div className="text-[15px] text-foreground/95 leading-[1.8] whitespace-pre-wrap [&>*+*]:mt-3">
                                   {item.detailedAnswer}
-                                </p>
+                                </div>
                               </div>
                             )}
 
                             {item.tips && item.tips.length > 0 && (
-                              <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4">
-                                <div className="flex items-center gap-2 mb-2 text-[11px] font-bold uppercase tracking-[0.12em] text-amber-700 dark:text-amber-500">
+                              <div className="rounded-lg border border-amber-500/25 bg-amber-500/5 p-5">
+                                <div className="flex items-center gap-2 mb-3 text-[11px] font-bold uppercase tracking-[0.14em] text-amber-700 dark:text-amber-500">
                                   <Lightbulb className="w-3.5 h-3.5" />
                                   Insider Tips · What Interviewers Look For
                                 </div>
-                                <ul className="space-y-1.5">
+                                <ul className="space-y-2.5">
                                   {item.tips.map((tip, ti) => (
-                                    <li key={ti} className="flex items-start gap-2 text-sm text-foreground/80 leading-relaxed">
-                                      <CheckCircle2 className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                                    <li key={ti} className="flex items-start gap-2.5 text-[14.5px] text-foreground/90 leading-[1.7]">
+                                      <CheckCircle2 className="w-4 h-4 text-amber-600 mt-1 shrink-0" />
                                       <span>{tip}</span>
                                     </li>
                                   ))}
@@ -273,7 +297,7 @@ const InterviewPrep = () => {
                             )}
 
                             <div className="flex items-center justify-between pt-1 text-[10px] font-mono uppercase tracking-[0.15em] text-muted-foreground/70 flex-wrap gap-2">
-                              <span>© MakeMyCV — Confidential Interview Playbook</span>
+                              <span>© MakeMyCV — Classified Interview Playbook · Do Not Redistribute</span>
                               <span>Page {i + 1} / {allQuestions.length}</span>
                             </div>
                           </div>

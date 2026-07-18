@@ -107,11 +107,16 @@ const Converter = () => {
         const im = new Image();
         im.onload = () => res(im); im.onerror = rej; im.src = dataUrl;
       });
-      const ratio = Math.min(pageW / img.width, pageH / img.height);
+      const margin = 24;
+      const availW = pageW - margin * 2;
+      const availH = pageH - margin * 2;
+      const ratio = Math.min(availW / img.width, availH / img.height);
       const w = img.width * ratio, h = img.height * ratio;
       const x = (pageW - w) / 2, y = (pageH - h) / 2;
       if (i > 0) pdf.addPage();
-      pdf.addImage(dataUrl, "JPEG", x, y, w, h, undefined, "FAST");
+      // Lossless PNG path preserves sharp text in screenshots/certificates
+      const isPng = /^data:image\/png/i.test(dataUrl);
+      pdf.addImage(dataUrl, isPng ? "PNG" : "JPEG", x, y, w, h, undefined, "SLOW");
     }
     pdf.save(`images-${Date.now()}.pdf`);
   };
@@ -143,15 +148,57 @@ const Converter = () => {
     pdfjs.GlobalWorkerOptions.workerSrc = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url")).default;
     const buf = await file.arrayBuffer();
     const pdf = await pdfjs.getDocument({ data: buf }).promise;
+    const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     let html = "";
     for (let p = 1; p <= pdf.numPages; p++) {
       const page = await pdf.getPage(p);
       const content = await page.getTextContent();
-      const text = content.items.map((it: any) => it.str).join(" ");
-      html += `<p>${text.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</p>`;
-      if (p < pdf.numPages) html += `<br style="page-break-after:always" />`;
+      // Group items into visual lines by transform y, then paragraphs by gap.
+      type Item = { str: string; x: number; y: number; h: number; bold: boolean };
+      const items: Item[] = content.items
+        .filter((it: any) => typeof it.str === "string")
+        .map((it: any) => ({
+          str: it.str,
+          x: it.transform[4],
+          y: it.transform[5],
+          h: it.height || Math.abs(it.transform[3]) || 10,
+          bold: /bold|black|heavy/i.test(it.fontName || ""),
+        }));
+      // Sort top→bottom, left→right
+      items.sort((a, b) => (b.y - a.y) || (a.x - b.x));
+      const lines: { y: number; h: number; text: string; bold: boolean }[] = [];
+      for (const it of items) {
+        const last = lines[lines.length - 1];
+        if (last && Math.abs(last.y - it.y) < it.h * 0.6) {
+          last.text += (it.str.startsWith(" ") || last.text.endsWith(" ") ? "" : " ") + it.str;
+          last.bold = last.bold || it.bold;
+        } else {
+          lines.push({ y: it.y, h: it.h, text: it.str, bold: it.bold });
+        }
+      }
+      // Merge lines into paragraphs by vertical gap
+      let paraBuf: string[] = [];
+      let prevY: number | null = null;
+      let prevH = 12;
+      const flush = (bold = false) => {
+        if (paraBuf.length) {
+          const txt = esc(paraBuf.join(" ").replace(/\s+/g, " ").trim());
+          if (txt) html += bold
+            ? `<p style="margin:6pt 0;font-weight:700;">${txt}</p>`
+            : `<p style="margin:6pt 0;">${txt}</p>`;
+          paraBuf = [];
+        }
+      };
+      for (const ln of lines) {
+        const gap = prevY == null ? 0 : prevY - ln.y;
+        if (prevY != null && gap > prevH * 1.6) flush(ln.bold);
+        paraBuf.push(ln.text);
+        prevY = ln.y; prevH = ln.h;
+      }
+      flush();
+      if (p < pdf.numPages) html += `<br clear="all" style="page-break-before:always" />`;
     }
-    const doc = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head><body style="font-family:Arial;font-size:11pt;">${html}</body></html>`;
+    const doc = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>${esc(file.name)}</title></head><body style="font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.5;color:#111;">${html}</body></html>`;
     downloadBlob(new Blob([doc], { type: "application/msword" }), file.name.replace(/\.pdf$/i, ".doc"));
   };
 
@@ -218,16 +265,19 @@ const Converter = () => {
     const pageH = out.internal.pageSize.getHeight();
     for (let p = 1; p <= pdf.numPages; p++) {
       const page = await pdf.getPage(p);
-      const viewport = page.getViewport({ scale: 1.2 });
+      // Render at higher resolution then compress via JPEG quality — better legibility than downscaling
+      const viewport = page.getViewport({ scale: 1.5 });
       const canvas = document.createElement("canvas");
       canvas.width = viewport.width; canvas.height = viewport.height;
       const ctx = canvas.getContext("2d")!;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.55);
       const ratio = Math.min(pageW / viewport.width, pageH / viewport.height);
       const w = viewport.width * ratio, h = viewport.height * ratio;
       if (p > 1) out.addPage();
-      out.addImage(dataUrl, "JPEG", (pageW - w) / 2, (pageH - h) / 2, w, h, undefined, "FAST");
+      out.addImage(dataUrl, "JPEG", (pageW - w) / 2, (pageH - h) / 2, w, h, undefined, "MEDIUM");
     }
     out.save(file.name.replace(/\.pdf$/i, "-compressed.pdf"));
   };
