@@ -1,1 +1,4 @@
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^makemycv\.co\.in [NC]
+RewriteRule ^(.*)$ https://makemycv.co.in [L,R=301]
 
