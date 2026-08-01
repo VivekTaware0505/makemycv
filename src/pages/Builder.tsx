@@ -61,9 +61,8 @@ const Builder = () => {
               scrollX: 0,
               scrollY: 0,
             },
-            pagebreak: { mode: ["css", "legacy"], avoid: [".rp-block"] },
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          })
+          } as any)
           .from(clone)
           .save();
       } finally {
