@@ -93,7 +93,7 @@ const ResumePreview = ({ data, template }: Props) => {
               <div>
                 <SectionTitle label={config.labels.experience} color={config.accentColor} />
                 {validExp.map((exp) => (
-                  <div key={exp.id} className="mt-3 pl-3" style={{ borderLeft: `2px solid ${config.accentColor}30` }}>
+                  <div key={exp.id} className="rp-block mt-3 pl-3" style={{ borderLeft: `2px solid ${config.accentColor}30` }}>
                     <div className="flex justify-between">
                       <span className="font-semibold text-xs">{exp.title}</span>
                       <span className="text-[10px]" style={{ color: '#999' }}>{exp.duration}</span>
@@ -109,7 +109,7 @@ const ResumePreview = ({ data, template }: Props) => {
               <div>
                 <SectionTitle label={config.labels.projects} color={config.accentColor} />
                 {validProjects.map((proj) => (
-                  <div key={proj.id} className="mt-3 pl-3" style={{ borderLeft: `2px solid ${config.accentColor}30` }}>
+                  <div key={proj.id} className="rp-block mt-3 pl-3" style={{ borderLeft: `2px solid ${config.accentColor}30` }}>
                     <div className="flex justify-between items-start">
                       <span className="font-semibold text-xs">{proj.name}</span>
                       {proj.link && <span className="text-[10px]" style={{ color: config.accentColor }}>{proj.link}</span>}
@@ -207,7 +207,7 @@ const ResumePreview = ({ data, template }: Props) => {
       <div className={config.headerStyle === "banner" ? "p-8 pt-6" : "p-8 pt-5"}>
         {/* Skills */}
         {skills.length > 0 && (
-          <div className="mb-6">
+          <div className="rp-block mb-6">
             <SectionTitle label={config.labels.skills} color={config.accentColor} />
             <div className="flex flex-wrap gap-1.5 mt-2">
               {skills.map((skill) => (
@@ -225,10 +225,10 @@ const ResumePreview = ({ data, template }: Props) => {
 
         {/* Experience */}
         {validExp.length > 0 && (
-          <div className="mb-6">
+          <div className="rp-block mb-6">
             <SectionTitle label={config.labels.experience} color={config.accentColor} />
             {validExp.map((exp) => (
-              <div key={exp.id} className="mb-3 pl-3 mt-2" style={{ borderLeft: `2px solid ${config.accentColor}20` }}>
+              <div key={exp.id} className="rp-block mb-3 pl-3 mt-2" style={{ borderLeft: `2px solid ${config.accentColor}20` }}>
                 <div className="flex justify-between">
                   <span className="font-semibold text-xs">{exp.title}</span>
                   <span className="text-xs" style={{ color: '#888' }}>{exp.duration}</span>
@@ -242,10 +242,10 @@ const ResumePreview = ({ data, template }: Props) => {
 
         {/* Projects */}
         {validProjects.length > 0 && (
-          <div className="mb-6">
+          <div className="rp-block mb-6">
             <SectionTitle label={config.labels.projects} color={config.accentColor} />
             {validProjects.map((proj) => (
-              <div key={proj.id} className="mb-3 pl-3 mt-2" style={{ borderLeft: `2px solid ${config.accentColor}20` }}>
+              <div key={proj.id} className="rp-block mb-3 pl-3 mt-2" style={{ borderLeft: `2px solid ${config.accentColor}20` }}>
                 <div className="flex justify-between items-start">
                   <span className="font-semibold text-xs">{proj.name}</span>
                   {proj.link && <span className="text-xs" style={{ color: config.accentColor }}>{proj.link}</span>}
@@ -271,10 +271,10 @@ const ResumePreview = ({ data, template }: Props) => {
 
         {/* Education */}
         {validEdu.length > 0 && (
-          <div className="mb-6">
+          <div className="rp-block mb-6">
             <SectionTitle label={config.labels.education} color={config.accentColor} />
             {validEdu.map((edu) => (
-              <div key={edu.id} className="mb-2 pl-3 mt-2" style={{ borderLeft: `2px solid ${config.accentColor}20` }}>
+              <div key={edu.id} className="rp-block mb-2 pl-3 mt-2" style={{ borderLeft: `2px solid ${config.accentColor}20` }}>
                 <div className="flex justify-between">
                   <span className="font-semibold text-xs">{edu.degree}</span>
                   <span className="text-xs" style={{ color: '#888' }}>{edu.year}</span>
@@ -287,10 +287,10 @@ const ResumePreview = ({ data, template }: Props) => {
 
         {/* Certifications */}
         {validCerts.length > 0 && (
-          <div className="mb-6">
+          <div className="rp-block mb-6">
             <SectionTitle label={config.labels.certifications} color={config.accentColor} />
             {validCerts.map((cert) => (
-              <div key={cert.id} className="mb-2 pl-3 mt-2" style={{ borderLeft: `2px solid ${config.accentColor}20` }}>
+              <div key={cert.id} className="rp-block mb-2 pl-3 mt-2" style={{ borderLeft: `2px solid ${config.accentColor}20` }}>
                 <div className="flex justify-between">
                   <span className="font-semibold text-xs">{cert.name}</span>
                   <span className="text-xs" style={{ color: '#888' }}>{cert.year}</span>
