@@ -1,7 +1,7 @@
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 
-const BASE_URL = "https://makemycv.lovable.app";
+const BASE_URL = "https://makemycv.co.in";
 
 interface SitemapEntry {
   path: string;
@@ -16,6 +16,7 @@ const entries: SitemapEntry[] = [
   { path: "/templates", changefreq: "weekly", priority: "0.8" },
   { path: "/ats-checker", changefreq: "weekly", priority: "0.8" },
   { path: "/converter", changefreq: "weekly", priority: "0.8" },
+  { path: "/interview-prep", changefreq: "weekly", priority: "0.8" },
 ];
 
 function generateSitemap(entries: SitemapEntry[]) {

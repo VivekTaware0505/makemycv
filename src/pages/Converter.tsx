@@ -44,7 +44,10 @@ const Converter = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  const [targetSize, setTargetSize] = useState<number>(500); // in KB
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const supportsTarget = active?.id === "pdf-compress" || active?.id === "image-compress";
 
   const reset = () => { setFiles([]); setDone(false); };
 
@@ -77,8 +80,8 @@ const Converter = () => {
         case "pdf-to-word": await pdfToWord(files[0]); break;
         case "pdf-to-image": await pdfToImage(files[0]); break;
         case "excel-to-pdf": await excelToPdf(files[0]); break;
-        case "pdf-compress": await pdfCompress(files[0]); break;
-        case "image-compress": await imageCompress(files); break;
+        case "pdf-compress": await pdfCompress(files[0], targetSize); break;
+        case "image-compress": await imageCompress(files, targetSize); break;
       }
       setDone(true);
       toast.success("Conversion complete — file downloaded!");
@@ -254,35 +257,77 @@ const Converter = () => {
     }
   };
 
-  const pdfCompress = async (file: File) => {
+  const pdfCompress = async (file: File, targetKB: number) => {
     const pdfjs: any = await import("pdfjs-dist");
     pdfjs.GlobalWorkerOptions.workerSrc = (await import("pdfjs-dist/build/pdf.worker.min.mjs?url")).default;
     const { jsPDF } = await import("jspdf");
     const buf = await file.arrayBuffer();
     const pdf = await pdfjs.getDocument({ data: buf }).promise;
-    const out = new jsPDF({ unit: "pt", format: "a4" });
-    const pageW = out.internal.pageSize.getWidth();
-    const pageH = out.internal.pageSize.getHeight();
+    const targetBytes = targetKB * 1024;
+
+    // Pre-render each page once at high resolution, then re-encode at
+    // decreasing quality/scale until the output fits the requested size.
+    const pages: HTMLCanvasElement[] = [];
     for (let p = 1; p <= pdf.numPages; p++) {
       const page = await pdf.getPage(p);
-      // Render at higher resolution then compress via JPEG quality — better legibility than downscaling
-      const viewport = page.getViewport({ scale: 1.5 });
+      const viewport = page.getViewport({ scale: 2 });
       const canvas = document.createElement("canvas");
       canvas.width = viewport.width; canvas.height = viewport.height;
       const ctx = canvas.getContext("2d")!;
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.55);
-      const ratio = Math.min(pageW / viewport.width, pageH / viewport.height);
-      const w = viewport.width * ratio, h = viewport.height * ratio;
-      if (p > 1) out.addPage();
-      out.addImage(dataUrl, "JPEG", (pageW - w) / 2, (pageH - h) / 2, w, h, undefined, "MEDIUM");
+      pages.push(canvas);
     }
-    out.save(file.name.replace(/\.pdf$/i, "-compressed.pdf"));
+
+    const build = (quality: number, scale: number) => {
+      const out = new jsPDF({ unit: "pt", format: "a4", compress: true });
+      const pageW = out.internal.pageSize.getWidth();
+      const pageH = out.internal.pageSize.getHeight();
+      pages.forEach((src, i) => {
+        let canvas = src;
+        if (scale < 1) {
+          const c = document.createElement("canvas");
+          c.width = Math.max(1, Math.round(src.width * scale));
+          c.height = Math.max(1, Math.round(src.height * scale));
+          const cx = c.getContext("2d")!;
+          cx.fillStyle = "#ffffff";
+          cx.fillRect(0, 0, c.width, c.height);
+          cx.drawImage(src, 0, 0, c.width, c.height);
+          canvas = c;
+        }
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
+        const ratio = Math.min(pageW / canvas.width, pageH / canvas.height);
+        const w = canvas.width * ratio, h = canvas.height * ratio;
+        if (i > 0) out.addPage();
+        out.addImage(dataUrl, "JPEG", (pageW - w) / 2, (pageH - h) / 2, w, h, undefined, "FAST");
+      });
+      return out.output("blob") as Blob;
+    };
+
+    const attempts: Array<[number, number]> = [
+      [0.9, 1], [0.8, 1], [0.7, 1], [0.6, 0.85], [0.5, 0.75],
+      [0.4, 0.65], [0.3, 0.55], [0.25, 0.45], [0.2, 0.4],
+    ];
+    let best: Blob | null = null;
+    for (const [q, s] of attempts) {
+      const blob = build(q, s);
+      best = blob;
+      if (blob.size <= targetBytes) break;
+    }
+    if (best) {
+      downloadBlob(best, file.name.replace(/\.pdf$/i, "-compressed.pdf"));
+      const kb = Math.round(best.size / 1024);
+      if (best.size > targetBytes) {
+        toast.info(`Smallest achievable size was ${kb} KB while keeping pages readable.`);
+      } else {
+        toast.success(`Compressed to ${kb} KB (target ${targetKB} KB).`);
+      }
+    }
   };
 
-  const imageCompress = async (imgs: File[]) => {
+  const imageCompress = async (imgs: File[], targetKB: number) => {
+    const targetBytes = targetKB * 1024;
     for (const file of imgs) {
       const dataUrl = await new Promise<string>((res, rej) => {
         const r = new FileReader();
@@ -294,19 +339,36 @@ const Converter = () => {
         const im = new Image();
         im.onload = () => res(im); im.onerror = rej; im.src = dataUrl;
       });
-      const maxDim = 1920;
-      let w = img.width, h = img.height;
-      if (w > maxDim || h > maxDim) {
-        const r = Math.min(maxDim / w, maxDim / h);
-        w = Math.round(w * r); h = Math.round(h * r);
+      const encode = async (quality: number, scale: number) => {
+        const maxDim = 1920 * scale;
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          const r = Math.min(maxDim / w, maxDim / h);
+          w = Math.round(w * r); h = Math.round(h * r);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext("2d")!;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        return await new Promise<Blob>((res) => canvas.toBlob((b) => res(b!), "image/jpeg", quality));
+      };
+      const attempts: Array<[number, number]> = [
+        [0.92, 1], [0.85, 1], [0.75, 1], [0.65, 0.85], [0.55, 0.75],
+        [0.45, 0.65], [0.35, 0.55], [0.28, 0.45], [0.2, 0.35],
+      ];
+      let best: Blob | null = null;
+      for (const [q, s] of attempts) {
+        best = await encode(q, s);
+        if (best.size <= targetBytes) break;
       }
-      const canvas = document.createElement("canvas");
-      canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext("2d")!;
-      ctx.drawImage(img, 0, 0, w, h);
-      const blob = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b!), "image/jpeg", 0.7));
-      const base = file.name.replace(/\.[^.]+$/, "");
-      downloadBlob(blob, `${base}-compressed.jpg`);
+      if (best) {
+        const base = file.name.replace(/\.[^.]+$/, "");
+        downloadBlob(best, `${base}-compressed.jpg`);
+        const kb = Math.round(best.size / 1024);
+        if (best.size > targetBytes) toast.info(`${file.name}: smallest achievable was ${kb} KB.`);
+      }
     }
   };
 
@@ -387,6 +449,52 @@ const Converter = () => {
                   </p>
                 </div>
               </div>
+
+              {supportsTarget && (
+                <div className="mb-4 p-4 rounded-xl bg-secondary/50 border border-border">
+                  <p className="text-xs font-semibold text-foreground mb-1">Target file size</p>
+                  <p className="text-[11px] text-muted-foreground mb-3">
+                    Pick how small the output should be — we compress just enough to hit it.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {[
+                      { label: "50 KB", kb: 50 },
+                      { label: "100 KB", kb: 100 },
+                      { label: "200 KB", kb: 200 },
+                      { label: "500 KB", kb: 500 },
+                      { label: "1 MB", kb: 1024 },
+                      { label: "2 MB", kb: 2048 },
+                      { label: "5 MB", kb: 5120 },
+                    ].map((o) => (
+                      <button
+                        key={o.kb}
+                        type="button"
+                        onClick={() => setTargetSize(o.kb)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                          targetSize === o.kb
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-card text-muted-foreground border-border hover:text-foreground"
+                        }`}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-muted-foreground">Custom:</span>
+                    <input
+                      type="number"
+                      min={10}
+                      value={targetSize}
+                      onChange={(e) => setTargetSize(Math.max(10, Number(e.target.value) || 10))}
+                      className="w-24 h-9 px-2 rounded-lg border border-border bg-card text-sm text-foreground"
+                    />
+                    <span className="text-[11px] text-muted-foreground">
+                      KB ({(targetSize / 1024).toFixed(2)} MB)
+                    </span>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
                 {files.map((f, i) => (
