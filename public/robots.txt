@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://makemycv.lovable.app/sitemap.xml
+Sitemap: https://makemycv.co.in/sitemap.xml
