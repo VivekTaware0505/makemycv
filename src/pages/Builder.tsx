@@ -31,16 +31,44 @@ const Builder = () => {
 
     if (format === "pdf") {
       const html2pdf = (await import("html2pdf.js")).default;
-      await html2pdf()
-        .set({
-          margin: 0,
-          filename: `${data.name || "resume"}.pdf`,
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .from(element)
-        .save();
+      // Render an off-screen clone at exact A4 width (794px @ 96dpi) so the
+      // PDF alignment matches the page instead of the on-screen preview width.
+      const clone = element.cloneNode(true) as HTMLElement;
+      clone.removeAttribute("id");
+      clone.style.width = "794px";
+      clone.style.minHeight = "1123px";
+      clone.style.margin = "0";
+      clone.style.background = "#ffffff";
+      clone.style.boxShadow = "none";
+      clone.style.borderRadius = "0";
+      const holder = document.createElement("div");
+      holder.style.cssText =
+        "position:fixed;top:0;left:-10000px;width:794px;background:#ffffff;z-index:-1;";
+      holder.appendChild(clone);
+      document.body.appendChild(holder);
+      try {
+        await html2pdf()
+          .set({
+            margin: 0,
+            filename: `${data.name || "resume"}.pdf`,
+            image: { type: "jpeg", quality: 1 },
+            html2canvas: {
+              scale: 2,
+              useCORS: true,
+              backgroundColor: "#ffffff",
+              windowWidth: 794,
+              width: 794,
+              scrollX: 0,
+              scrollY: 0,
+            },
+            pagebreak: { mode: ["css", "legacy"], avoid: [".rp-block"] },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait", compress: true },
+          })
+          .from(clone)
+          .save();
+      } finally {
+        document.body.removeChild(holder);
+      }
     } else {
       const htmlContent = `
         <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
