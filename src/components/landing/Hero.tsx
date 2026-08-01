@@ -35,19 +35,22 @@ const Hero = () => {
               </div>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4.5rem] font-extrabold tracking-tight text-foreground mb-6 leading-[1.05]">
-              Create an{" "}
-              <span className="text-gradient-brand">ATS-Friendly</span>{" "}
-              Resume in{" "}
-              <span className="relative inline-block">
-                <span className="relative z-10">5 Minutes</span>
-                <span className="absolute inset-x-0 bottom-1 h-3 gradient-brand-soft rounded -z-0" />
-              </span>
+            <h1 className="font-display uppercase text-[2.35rem] sm:text-5xl md:text-6xl lg:text-[4.75rem] text-foreground mb-5 leading-[0.95]">
+              Create Your
+              <br />
+              <span className="text-primary">Dream</span> Resume
             </h1>
 
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed font-light">
-              Recruiter-approved templates. Instant PDF & Word download.{" "}
-              <span className="text-foreground font-medium">100% free</span> — no sign-up, no watermark.
+            <div className="hidden lg:block w-20 h-1 bg-primary rounded-full mb-6" />
+
+            <p className="text-xl sm:text-2xl font-bold text-foreground mb-3">
+              Land Your Dream Job <span className="text-primary">Faster.</span>
+            </p>
+
+            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed font-light">
+              Build a professional <span className="text-primary font-semibold">ATS-friendly</span> resume in 5 minutes.
+              Instant PDF &amp; Word download — <span className="text-foreground font-medium">100% free</span>, no sign-up,
+              no watermark. Perfect for freshers and experienced professionals.
             </p>
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-x-5 gap-y-2 mb-8 text-sm">

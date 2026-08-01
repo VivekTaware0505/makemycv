@@ -21,11 +21,18 @@ const Navbar = () => {
       <div className="container mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
         {/* Logo */}
         <div
-          className="text-lg sm:text-xl font-bold tracking-tight text-foreground cursor-pointer flex items-center gap-1.5"
+          className="cursor-pointer flex items-center gap-2"
           onClick={() => { navigate("/"); setMobileOpen(false); }}
         >
-          <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary flex items-center justify-center text-primary-foreground text-[10px] sm:text-xs font-black">M</div>
-          MakeMy<span className="text-primary">CV</span><span className="text-muted-foreground">.com</span>
+          <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl gradient-brand flex items-center justify-center text-primary-foreground text-xs sm:text-sm font-black shadow-glow">M</div>
+          <div className="leading-none">
+            <div className="text-lg sm:text-xl font-display tracking-tight text-foreground">
+              MakeMy<span className="text-primary">CV</span>
+            </div>
+            <div className="hidden sm:block text-[9px] tracking-[0.28em] text-muted-foreground font-medium mt-0.5">
+              BUILD YOUR FUTURE
+            </div>
+          </div>
         </div>
 
         {/* Desktop nav */}
