@@ -140,7 +140,7 @@ const DownloadBar = ({ data, template, onDownload }: Props) => {
                   </div>
 
                   <p className="text-center text-xs text-muted-foreground mt-5">
-                    100% free · No sign-up required · Powered by MakeMyCV.com
+                    100% free · No sign-up required · Powered by MakeMyCV
                   </p>
                 </>
               )}

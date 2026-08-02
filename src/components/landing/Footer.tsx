@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { Github, Linkedin, Twitter, Mail, Heart, ExternalLink } from "lucide-react";
+import { Github, Linkedin, Twitter, Mail, ExternalLink } from "lucide-react";
+import logo from "@/assets/makemycv-logo.png.asset.json";
 import founderPhoto from "@/assets/founder.webp";
 
 const Footer = () => {
@@ -27,8 +28,8 @@ const Footer = () => {
           {/* Brand */}
           <div className="col-span-2 md:col-span-4">
             <div className="flex items-center gap-2 text-xl font-bold mb-4">
-              <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-xs font-black">M</div>
-              MakeMy<span className="text-primary">CV</span><span className="text-white/40">.com</span>
+              <img src={logo.url} alt="MakeMyCV logo" className="w-8 h-8 rounded-full object-contain" />
+              MakeMy<span className="text-primary">CV</span>
             </div>
             <p className="text-sm text-white/45 leading-relaxed mb-6 max-w-xs">
               Build professional, ATS-optimized resumes in minutes. 100% free. Trusted by thousands across India.
@@ -104,10 +105,10 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="mt-12 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-white/30">
-            © {new Date().getFullYear()} MakeMyCV.com — All rights reserved.
+            © {new Date().getFullYear()} MakeMyCV — All rights reserved.
           </p>
           <p className="text-xs text-white/30 flex items-center gap-1">
-            Made with <Heart className="w-3 h-3 text-red-500" /> in India
+            Made in India
           </p>
         </div>
       </div>

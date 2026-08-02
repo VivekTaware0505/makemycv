@@ -43,7 +43,7 @@ const Features = () => (
         viewport={{ once: true }}
         className="text-center mb-16"
       >
-        <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 block">Why MakeMyCV.com</span>
+        <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3 block">Why MakeMyCV</span>
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-foreground mb-4">
           Everything you need to get hired
         </h2>
