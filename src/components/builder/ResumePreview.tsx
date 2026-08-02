@@ -54,7 +54,7 @@ const ResumePreview = ({ data, template }: Props) => {
       <div
         id="resume-preview"
         className="relative bg-white font-sans"
-        style={{ fontFamily: config.fontFamily, color: "#1f2933", display: "flex", flexDirection: "column" }}
+        style={{ fontFamily: config.fontFamily, color: "#1f2933", display: "flex", flexDirection: "column", aspectRatio: "794 / 1123" }}
       >
         {/* Top band: dark stub over sidebar + colored banner with photo */}
         <div style={{ display: "flex", alignItems: "stretch" }}>
