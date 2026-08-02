@@ -485,13 +485,13 @@ function getTemplateConfig(template: TemplateId): TemplateConfig {
 
   switch (template) {
     case "modern":
-      return { ...base, headerStyle: "banner", headerBg: "#111827", accentColor: "#111827", pillStyle: "rounded", labels: defaults };
+      return { ...base, layout: "two-column", headerStyle: "banner", headerBg: "#4a7c95", sidebarBg: "#2f3b45", accentColor: "#4a7c95", pillStyle: "rounded", labels: defaults };
     case "minimal":
       return { ...base, headerStyle: "minimal", headerBg: "#fff", accentColor: "#374151", pillStyle: "square", labels: defaults };
     case "executive":
-      return { ...base, layout: "two-column", headerStyle: "banner", headerBg: "#0c1425", accentColor: "#b8860b", pillStyle: "square", fontFamily: "'Georgia', serif", labels: { skills: "Core Competencies", education: "Education", experience: "Executive Experience", projects: "Strategic Initiatives", certifications: "Board & Certifications" } };
+      return { ...base, layout: "two-column", headerStyle: "banner", headerBg: "#1b2a41", sidebarBg: "#0c1425", accentColor: "#b8860b", pillStyle: "square", fontFamily: "'Georgia', serif", labels: { skills: "Core Competencies", education: "Education", experience: "Executive Experience", projects: "Strategic Initiatives", certifications: "Board & Certifications" } };
     case "consulting":
-      return { ...base, layout: "two-column", headerStyle: "banner", headerBg: "#0f172a", accentColor: "#0ea5e9", pillStyle: "rounded", labels: { skills: "Expertise", education: "Education", experience: "Consulting Experience", projects: "Key Engagements", certifications: "Certifications" } };
+      return { ...base, layout: "two-column", headerStyle: "banner", headerBg: "#2f77a1", sidebarBg: "#1f2a33", accentColor: "#0ea5e9", pillStyle: "rounded", labels: { skills: "Expertise", education: "Education", experience: "Consulting Experience", projects: "Key Engagements", certifications: "Certifications" } };
     case "it-developer":
       return { ...base, headerStyle: "banner", headerBg: "#0f766e", accentColor: "#0f766e", pillStyle: "rounded", labels: { skills: "Technical Skills", education: "Education", experience: "Work Experience", projects: "Technical Projects", certifications: "Certifications & Courses" } };
     case "banking":
