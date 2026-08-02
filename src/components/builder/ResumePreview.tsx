@@ -444,10 +444,29 @@ const SectionTitle = ({ label, color }: { label: string; color: string }) => (
   <h2 className="text-xs font-bold uppercase tracking-widest pb-1" style={{ color, borderBottom: `1px solid ${color}20` }}>{label}</h2>
 );
 
+const ContactRow = ({ icon, text, size }: { icon: string; text: string; size: string }) => (
+  <div style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: size, lineHeight: 1.5 }}>
+    <span style={{ width: 14, flexShrink: 0, opacity: 0.85, textAlign: "center" }}>{icon}</span>
+    <span style={{ wordBreak: "break-word" }}>{text}</span>
+  </div>
+);
+
+const SidebarTitle = ({ label, size }: { label: string; size: string }) => (
+  <h2 style={{ fontSize: size, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#fff" }}>{label}</h2>
+);
+
+const MainTitle = ({ label, size }: { label: string; size: string }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    <h2 style={{ fontSize: size, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#1f2933", whiteSpace: "nowrap" }}>{label}</h2>
+    <span style={{ flex: 1, height: 1, background: "#9aa5b1" }} />
+  </div>
+);
+
 interface TemplateConfig {
   headerStyle: "banner" | "classic" | "minimal";
   layout: "single" | "two-column";
   headerBg: string;
+  sidebarBg?: string;
   accentColor: string;
   pillStyle: "rounded" | "square";
   fontFamily: string;
