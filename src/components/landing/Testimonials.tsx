@@ -4,42 +4,36 @@ import { Star, Quote } from "lucide-react";
 const testimonials = [
   {
     name: "Akshay Thorat",
-    role: "Software Engineer @ Infosys",
     initials: "AT",
     text: "Built my resume in under 10 minutes and got 3 interview calls the same week. The ATS score checker actually helped me fix real issues before applying.",
     color: "gradient-brand",
   },
   {
     name: "Vaibhav Dalavi",
-    role: "MBA Fresher, IIM-B",
     initials: "VD",
     text: "Every other builder wanted a subscription just to download PDF. MakeMyCV gave me a clean, recruiter-friendly resume for free. Landed my summer internship offer.",
     color: "gradient-emerald",
   },
   {
     name: "Utkarsha Thaware",
-    role: "Medical Resident",
     initials: "UT",
     text: "The healthcare template is genuinely tailored — proper section for licenses, publications, rotations. Feels made by someone who actually knows medical CVs.",
     color: "gradient-brand",
   },
   {
     name: "Abhijit Pawar",
-    role: "Data Analyst @ Flipkart",
     initials: "AP",
     text: "Switched from Canva. This is faster, cleaner, and the PDF export is pixel-perfect. My recruiter said it was the best-formatted resume in the shortlist.",
     color: "gradient-emerald",
   },
   {
     name: "Sanskruti Mane-Deshmukh",
-    role: "Final-year B.Tech Student",
     initials: "SM",
     text: "No sign-up wall. No 'upgrade to download'. I made 4 different versions for different roles without paying a rupee. This is what free should mean.",
     color: "gradient-brand",
   },
   {
     name: "Abhishek",
-    role: "Marketing Manager",
     initials: "A",
     text: "The Word export is a lifesaver — I could tweak keywords for each application. Simple UI, no bloat, exactly what I needed.",
     color: "gradient-emerald",
@@ -91,10 +85,7 @@ const Testimonials = () => (
               <div className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center text-white font-bold text-sm`}>
                 {t.initials}
               </div>
-              <div>
-                <div className="font-semibold text-foreground text-sm">{t.name}</div>
-                <div className="text-xs text-muted-foreground">{t.role}</div>
-              </div>
+              <div className="font-semibold text-foreground text-sm">{t.name}</div>
             </div>
           </motion.div>
         ))}
