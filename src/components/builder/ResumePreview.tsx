@@ -46,6 +46,12 @@ const ResumePreview = ({ data, template }: Props) => {
   const px = (n: number) => `${Math.round(n * d.fs * 10) / 10}px`;
   const roleLabel = fieldLabels[data.field] && data.field !== "other" ? fieldLabels[data.field] : "";
 
+  // When a resume is light on content, spread the main-column sections down the
+  // page so the PDF has no large empty block at the bottom.
+  const mainSections =
+    (data.summary ? 1 : 0) + (validEdu.length ? 1 : 0) + (validExp.length ? 1 : 0) + (validProjects.length ? 1 : 0);
+  const fillMain = contentLength < 1600 && mainSections >= 3;
+
   // Two-column layout: dark full-height sidebar + banner header with photo
   if (config.layout === "two-column") {
     const sidebarBg = config.sidebarBg || "#2f3b45";
