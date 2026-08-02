@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import logo from "@/assets/makemycv-logo.png.asset.json";
 
 
 const Navbar = () => {
@@ -24,7 +25,7 @@ const Navbar = () => {
           className="cursor-pointer flex items-center gap-2"
           onClick={() => { navigate("/"); setMobileOpen(false); }}
         >
-          <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-xl gradient-brand flex items-center justify-center text-primary-foreground text-xs sm:text-sm font-black shadow-glow">M</div>
+          <img src={logo.url} alt="MakeMyCV logo" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full shadow-glow object-contain" />
           <div className="leading-none">
             <div className="text-lg sm:text-xl font-display tracking-tight text-foreground">
               MakeMy<span className="text-primary">CV</span>
