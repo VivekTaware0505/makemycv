@@ -1,9 +1,17 @@
-import { ResumeData } from "@/types/resume";
+import { ResumeData, fieldLabels } from "@/types/resume";
 import { TemplateId } from "@/types/templates";
 
 interface Props {
   data: ResumeData;
   template: TemplateId;
+}
+
+interface Density {
+  fs: number;
+  gap: number;
+  blockGap: number;
+  pad: number;
+  lh: number;
 }
 
 const ResumePreview = ({ data, template }: Props) => {
