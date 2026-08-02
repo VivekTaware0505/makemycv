@@ -103,7 +103,7 @@ const Builder = () => {
           <span className="hidden sm:inline">Back</span>
         </Button>
         <div className="flex-1 text-center">
-          <span className="text-sm font-semibold text-foreground">MakeMyCV.com Builder</span>
+          <span className="text-sm font-semibold text-foreground">MakeMyCV Builder</span>
         </div>
 
         {/* Template selector */}
