@@ -481,7 +481,9 @@ interface TemplateConfig {
 
 function getTemplateConfig(template: TemplateId): TemplateConfig {
   const defaults = { skills: "Skills", education: "Education", experience: "Experience", projects: "Projects", certifications: "Certifications" };
-  const base = { layout: "single" as const, fontFamily: "'Inter', 'Segoe UI', sans-serif" };
+  // All templates share the professional sidebar layout (dark left rail +
+  // colored header band with photo), varying by color, labels and typography.
+  const base = { layout: "two-column" as const, fontFamily: "'Inter', 'Segoe UI', sans-serif" };
 
   switch (template) {
     case "modern":
