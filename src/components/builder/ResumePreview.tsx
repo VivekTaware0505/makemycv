@@ -157,20 +157,6 @@ const ResumePreview = ({ data, template }: Props) => {
               </div>
             )}
 
-            {validEdu.length > 0 && (
-              <div className="rp-block">
-                <SidebarTitle label={config.labels.education} size={px(13)} />
-                <div style={{ marginTop: 8, display: "flex", flexDirection: "column", gap: d.blockGap - 2 }}>
-                  {validEdu.map((edu) => (
-                    <div key={edu.id} style={{ fontSize: px(11), lineHeight: d.lh }}>
-                      <p style={{ fontWeight: 700 }}>{edu.degree}</p>
-                      {edu.institution && <p style={{ opacity: 0.8 }}>{edu.institution}</p>}
-                      {edu.year && <p style={{ opacity: 0.6 }}>{edu.year}</p>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Main column */}
@@ -181,6 +167,7 @@ const ResumePreview = ({ data, template }: Props) => {
               display: "flex",
               flexDirection: "column",
               gap: d.gap,
+              justifyContent: fillMain ? "space-between" : "flex-start",
               background: "#fff",
             }}
           >
