@@ -474,19 +474,19 @@ interface TemplateConfig {
 
 function getTemplateConfig(template: TemplateId): TemplateConfig {
   const defaults = { skills: "Skills", education: "Education", experience: "Experience", projects: "Projects", certifications: "Certifications" };
-  // All templates share the professional sidebar layout (dark left rail +
-  // colored header band with photo), varying by color, labels and typography.
-  const base = { layout: "two-column" as const, fontFamily: "'Inter', 'Segoe UI', sans-serif" };
+  // Classic single-column layout (original design) — best alignment in PDF
+  // exports across sparse and dense resumes.
+  const base = { layout: "single" as const, fontFamily: "'Inter', 'Segoe UI', sans-serif" };
 
   switch (template) {
     case "modern":
-      return { ...base, layout: "two-column", headerStyle: "banner", headerBg: "#4a7c95", sidebarBg: "#2f3b45", accentColor: "#4a7c95", pillStyle: "rounded", labels: defaults };
+      return { ...base, headerStyle: "banner", headerBg: "#4a7c95", accentColor: "#4a7c95", pillStyle: "rounded", labels: defaults };
     case "minimal":
       return { ...base, headerStyle: "minimal", headerBg: "#fff", accentColor: "#374151", pillStyle: "square", labels: defaults };
     case "executive":
-      return { ...base, layout: "two-column", headerStyle: "banner", headerBg: "#1b2a41", sidebarBg: "#0c1425", accentColor: "#b8860b", pillStyle: "square", fontFamily: "'Georgia', serif", labels: { skills: "Core Competencies", education: "Education", experience: "Executive Experience", projects: "Strategic Initiatives", certifications: "Board & Certifications" } };
+      return { ...base, headerStyle: "banner", headerBg: "#1b2a41", accentColor: "#b8860b", pillStyle: "square", fontFamily: "'Georgia', serif", labels: { skills: "Core Competencies", education: "Education", experience: "Executive Experience", projects: "Strategic Initiatives", certifications: "Board & Certifications" } };
     case "consulting":
-      return { ...base, layout: "two-column", headerStyle: "banner", headerBg: "#2f77a1", sidebarBg: "#1f2a33", accentColor: "#0ea5e9", pillStyle: "rounded", labels: { skills: "Expertise", education: "Education", experience: "Consulting Experience", projects: "Key Engagements", certifications: "Certifications" } };
+      return { ...base, headerStyle: "banner", headerBg: "#2f77a1", accentColor: "#0ea5e9", pillStyle: "rounded", labels: { skills: "Expertise", education: "Education", experience: "Consulting Experience", projects: "Key Engagements", certifications: "Certifications" } };
     case "it-developer":
       return { ...base, headerStyle: "banner", headerBg: "#0f766e", accentColor: "#0f766e", pillStyle: "rounded", labels: { skills: "Technical Skills", education: "Education", experience: "Work Experience", projects: "Technical Projects", certifications: "Certifications & Courses" } };
     case "banking":
