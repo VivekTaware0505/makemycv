@@ -9,6 +9,9 @@ import Templates from "./pages/Templates.tsx";
 import ATSChecker from "./pages/ATSChecker.tsx";
 import Converter from "./pages/Converter.tsx";
 import InterviewPrep from "./pages/InterviewPrep.tsx";
+import Journey from "./pages/Journey.tsx";
+import ExamPrep from "./pages/ExamPrep.tsx";
+import ExamSubject from "./pages/ExamSubject.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import MobileBottomNav from "./components/landing/MobileBottomNav";
 
@@ -27,6 +30,9 @@ const App = () => (
           <Route path="/ats-checker" element={<ATSChecker />} />
           <Route path="/converter" element={<Converter />} />
           <Route path="/interview-prep" element={<InterviewPrep />} />
+          <Route path="/journey" element={<Journey />} />
+          <Route path="/exam-prep" element={<ExamPrep />} />
+          <Route path="/exam-prep/:subjectId" element={<ExamSubject />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <MobileBottomNav />

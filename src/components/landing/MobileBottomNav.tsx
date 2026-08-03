@@ -1,12 +1,12 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, LayoutTemplate, FileCheck, Sparkles, Wrench } from "lucide-react";
+import { Home, BookOpen, FileCheck, Sparkles, Route as RouteIcon } from "lucide-react";
 
 const items = [
   { path: "/", label: "Home", icon: Home },
-  { path: "/templates", label: "Templates", icon: LayoutTemplate },
+  { path: "/exam-prep", label: "Exams", icon: BookOpen },
   { path: "/builder", label: "Build", icon: FileCheck, primary: true },
   { path: "/interview-prep", label: "Interview", icon: Sparkles },
-  { path: "/converter", label: "Tools", icon: Wrench },
+  { path: "/journey", label: "Journey", icon: RouteIcon },
 ];
 
 const MobileBottomNav = () => {
