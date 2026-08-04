@@ -36,8 +36,8 @@ const ExamSubject = () => {
     try {
       await downloadExamPdf({
         subject,
-        questions: kind === "model" ? questions.slice(0, 6) : questions,
-        withAnswers: kind === "answers",
+        questions: kind === "model" ? questions.slice(0, 22) : questions,
+        withAnswers: kind !== "questions",
         university: `${university.name} — ${university.pattern}`,
         modelPaper: kind === "model",
       });
@@ -105,7 +105,7 @@ const ExamSubject = () => {
 
       <section className="container mx-auto px-4 py-6">
         <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
-          Year {subject.year} · Semester {subject.sem}
+          Year {subject.year} · Semester {(subject.year - 1) * 2 + subject.sem} (Sem {subject.sem} of the year)
           {subject.code ? ` · ${subject.code}` : ""}
         </p>
         <h1 className="font-display uppercase text-2xl sm:text-4xl leading-tight mt-2 mb-3">{subject.name}</h1>
@@ -159,7 +159,7 @@ const ExamSubject = () => {
               onClick={() => handleDownload("model")}
             >
               {busy === "model" ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
-              Dummy paper
+              IMP & Model Paper
             </Button>
           </div>
         </div>

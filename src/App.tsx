@@ -12,6 +12,7 @@ import InterviewPrep from "./pages/InterviewPrep.tsx";
 import Journey from "./pages/Journey.tsx";
 import ExamPrep from "./pages/ExamPrep.tsx";
 import ExamSubject from "./pages/ExamSubject.tsx";
+import Feedback from "./pages/Feedback.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import MobileBottomNav from "./components/landing/MobileBottomNav";
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/journey" element={<Journey />} />
           <Route path="/exam-prep" element={<ExamPrep />} />
           <Route path="/exam-prep/:subjectId" element={<ExamSubject />} />
+          <Route path="/feedback" element={<Feedback />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <MobileBottomNav />

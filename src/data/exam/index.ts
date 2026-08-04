@@ -1,13 +1,35 @@
 import { branchSubjects } from "./branchSubjects";
 import { firstYearSubjects } from "./firstYear";
+import { compAppFoundationSubjects } from "./compAppFoundation";
+import { compAppCoreSubjects } from "./compAppCore";
+import { compAppProgrammingSubjects } from "./compAppProgramming";
+import { compAppAdvancedSubjects } from "./compAppAdvanced";
 import { BranchId, Subject } from "./types";
 
 export * from "./types";
 
-export const allSubjects: Subject[] = [...firstYearSubjects, ...branchSubjects];
+export const allSubjects: Subject[] = [
+  ...firstYearSubjects,
+  ...branchSubjects,
+  ...compAppFoundationSubjects,
+  ...compAppCoreSubjects,
+  ...compAppProgrammingSubjects,
+  ...compAppAdvancedSubjects,
+];
 
 export function subjectsFor(branch: BranchId, year?: number) {
   return allSubjects.filter((s) => s.branches.includes(branch) && (!year || s.year === year));
+}
+
+export function subjectsForSem(branch: BranchId, sem: number) {
+  return allSubjects.filter((s) => s.branches.includes(branch) && (s.year - 1) * 2 + s.sem === sem);
+}
+
+export function semestersFor(branch: BranchId) {
+  const set = new Set(
+    allSubjects.filter((s) => s.branches.includes(branch)).map((s) => (s.year - 1) * 2 + s.sem),
+  );
+  return [...set].sort((a, b) => a - b);
 }
 
 export function yearsFor(branch: BranchId) {

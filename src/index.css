@@ -6,15 +6,15 @@
 
 @layer base {
   :root {
-    /* Deep navy brand surface, matching the MakeMyCV key art */
-    --background: 222 62% 8%;
-    --foreground: 210 40% 98%;
+    /* Clean white surface with electric blue brand accents */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
 
-    --card: 221 54% 12%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 221 54% 12%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
     --primary: 219 91% 56%;
     --primary-foreground: 0 0% 100%;
@@ -23,20 +23,20 @@
     --brand-navy: 222 62% 8%;
     --brand-emerald: 158 74% 44%;
 
-    --secondary: 221 46% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 214 32% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 221 46% 17%;
-    --muted-foreground: 215 25% 72%;
+    --muted: 214 32% 96%;
+    --muted-foreground: 215 20% 42%;
 
-    --accent: 221 46% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 214 32% 96%;
+    --accent-foreground: 222 47% 11%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 35% 22%;
-    --input: 220 35% 22%;
+    --border: 214 25% 88%;
+    --input: 214 25% 88%;
     --ring: 219 91% 56%;
 
     --radius: 0.75rem;
@@ -46,23 +46,23 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(219 91% 56% / 0.20) 0%, transparent 55%), radial-gradient(ellipse at 90% 85%, hsl(213 94% 68% / 0.14) 0%, transparent 55%), linear-gradient(180deg, hsl(222 64% 7%) 0%, hsl(221 56% 12%) 100%);
+    --gradient-hero: radial-gradient(ellipse at 15% 10%, hsl(219 91% 56% / 0.10) 0%, transparent 55%), radial-gradient(ellipse at 90% 85%, hsl(158 74% 44% / 0.08) 0%, transparent 55%), linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(214 40% 98%) 100%);
     --gradient-brand: linear-gradient(135deg, hsl(219 91% 56%) 0%, hsl(213 94% 68%) 100%);
-    --gradient-brand-soft: linear-gradient(135deg, hsl(219 91% 56% / 0.22) 0%, hsl(213 94% 68% / 0.14) 100%);
+    --gradient-brand-soft: linear-gradient(135deg, hsl(219 91% 56% / 0.12) 0%, hsl(213 94% 68% / 0.07) 100%);
     --gradient-emerald: linear-gradient(135deg, hsl(158 74% 44%) 0%, hsl(172 76% 42%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(221 52% 14%) 0%, hsl(222 58% 10%) 100%);
-    --shadow-card: 0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.3);
-    --shadow-card-hover: 0 14px 30px -8px rgba(37,99,235,0.35), 0 8px 10px -6px rgba(0,0,0,0.4);
-    --shadow-elevated: 0 28px 70px -18px rgba(37,99,235,0.45);
-    --shadow-glow: 0 0 45px hsl(219 91% 56% / 0.45);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(214 40% 98%) 100%);
+    --shadow-card: 0 1px 3px 0 rgba(15,23,42,0.08), 0 1px 2px -1px rgba(15,23,42,0.06);
+    --shadow-card-hover: 0 14px 30px -8px rgba(37,99,235,0.18), 0 8px 10px -6px rgba(15,23,42,0.08);
+    --shadow-elevated: 0 28px 70px -18px rgba(37,99,235,0.22);
+    --shadow-glow: 0 0 35px hsl(219 91% 56% / 0.25);
 
-    --sidebar-background: 222 60% 9%;
-    --sidebar-foreground: 210 40% 96%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
     --sidebar-primary: 219 91% 56%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 221 46% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 220 35% 22%;
+    --sidebar-accent: 214 32% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 25% 88%;
     --sidebar-ring: 219 91% 56%;
   }
 }

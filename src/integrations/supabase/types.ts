@@ -35,6 +35,36 @@ export type Database = {
         }
         Relationships: []
       }
+      student_feedback: {
+        Row: {
+          course: string | null
+          created_at: string
+          id: string
+          is_published: boolean
+          message: string
+          name: string
+          rating: number
+        }
+        Insert: {
+          course?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          message: string
+          name: string
+          rating?: number
+        }
+        Update: {
+          course?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          message?: string
+          name?: string
+          rating?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
