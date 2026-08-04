@@ -25,7 +25,7 @@ interface Options {
 
 function buildHtml({ subject, questions, withAnswers, university, modelPaper }: Options) {
   const heading = modelPaper
-    ? "Model Question Paper"
+    ? "IMP & Model Question Paper with Model Answers"
     : withAnswers
     ? "Important Questions with Answers"
     : "Important Questions";
@@ -47,7 +47,7 @@ function buildHtml({ subject, questions, withAnswers, university, modelPaper }: 
     <div class="head">
       <div class="brand">MakeMyCV · Exam Prep</div>
       <h1>${escape(subject.name)}</h1>
-      <p class="sub">${escape(heading)} — Year ${subject.year}, Semester ${subject.sem}${
+      <p class="sub">${escape(heading)} — Year ${subject.year}, Semester ${(subject.year - 1) * 2 + subject.sem}${
     subject.code ? ` · Code ${escape(subject.code)}` : ""
   }</p>
       ${university ? `<p class="sub">${escape(university)}</p>` : ""}

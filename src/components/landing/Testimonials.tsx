@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { MessageSquarePlus, Star, Quote } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const testimonials = [
   {
@@ -40,7 +42,9 @@ const testimonials = [
   },
 ];
 
-const Testimonials = () => (
+const Testimonials = () => {
+  const navigate = useNavigate();
+  return (
   <section className="py-16 sm:py-24 bg-background">
     <div className="container mx-auto px-4 sm:px-6">
       <motion.div
@@ -90,8 +94,23 @@ const Testimonials = () => (
           </motion.div>
         ))}
       </div>
+
+      <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <Button
+          variant="outline"
+          className="h-12 rounded-xl font-semibold px-6"
+          onClick={() => navigate("/feedback")}
+        >
+          Read all student feedback
+        </Button>
+        <Button className="h-12 rounded-xl font-semibold px-6 gap-2" onClick={() => navigate("/feedback")}>
+          <MessageSquarePlus className="w-4 h-4" />
+          Give your feedback
+        </Button>
+      </div>
     </div>
   </section>
-);
+  );
+};
 
 export default Testimonials;

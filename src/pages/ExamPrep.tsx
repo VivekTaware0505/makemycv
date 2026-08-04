@@ -5,30 +5,54 @@ import { motion } from "framer-motion";
 import { ArrowLeft, BookOpen, FileText, Flame, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { branches, searchSubjects, subjectsFor, trendingSubjects, yearsFor, BranchId } from "@/data/exam";
+import {
+  branches,
+  searchSubjects,
+  subjectsFor,
+  subjectsForSem,
+  semestersFor,
+  trendingSubjects,
+  yearsFor,
+  BranchId,
+} from "@/data/exam";
+
+const streams = [
+  { id: "engineering", label: "Engineering" },
+  { id: "computer-application", label: "BCA · BCS · MCA · MCS" },
+] as const;
 
 const ExamPrep = () => {
   const navigate = useNavigate();
+  const [stream, setStream] = useState<"engineering" | "computer-application">("engineering");
   const [branch, setBranch] = useState<BranchId>("first-year");
   const [year, setYear] = useState<number | null>(null);
+  const [sem, setSem] = useState<number | null>(null);
   const [query, setQuery] = useState("");
 
   const availableYears = useMemo(() => yearsFor(branch), [branch]);
-  const subjects = useMemo(() => subjectsFor(branch, year ?? undefined), [branch, year]);
+  const availableSems = useMemo(() => semestersFor(branch), [branch]);
+  const subjects = useMemo(
+    () => (sem ? subjectsForSem(branch, sem) : subjectsFor(branch, year ?? undefined)),
+    [branch, year, sem],
+  );
   const results = useMemo(() => searchSubjects(query), [query]);
   const trending = useMemo(() => trendingSubjects(), []);
   const list = query ? results : subjects;
+  const streamBranches = useMemo(
+    () => branches.filter((b) => (b.stream ?? "engineering") === stream),
+    [stream],
+  );
 
   return (
     <div className="min-h-screen bg-background pb-24 md:pb-12">
       <Helmet>
-        <title>Engineering Important Questions & Answers PDF - MakeMyCV</title>
+        <title>Engineering, BCA, MCA Important Questions PDF - MakeMyCV</title>
         <meta
           name="description"
-          content="Branch-wise and year-wise important questions for engineering exams with detailed answers. Download questions-only or questions-with-answers PDFs free."
+          content="Semester-wise important questions with deep model answers for Engineering, BCA, BCS, MCA and MCS — SPPU, DBATU, Mumbai, Shivaji, RTMNU patterns. Free question and answer PDFs."
         />
         <link rel="canonical" href="https://makemycv.co.in/exam-prep" />
-        <meta property="og:title" content="Engineering Important Questions & Answers PDF - MakeMyCV" />
+        <meta property="og:title" content="Engineering, BCA, MCA Important Questions PDF - MakeMyCV" />
         <meta property="og:url" content="https://makemycv.co.in/exam-prep" />
       </Helmet>
 
@@ -48,11 +72,12 @@ const ExamPrep = () => {
             <BookOpen className="w-3.5 h-3.5 text-primary" /> Branch-wise · Year-wise · Subject-wise
           </div>
           <h1 className="font-display uppercase text-3xl sm:text-5xl leading-[0.95] mb-4">
-            Engineering <span className="text-primary">Important</span> Questions
+            <span className="text-primary">Important</span> Questions & Model Papers
           </h1>
           <p className="text-muted-foreground max-w-2xl leading-relaxed">
-            Exam-ready questions with full model answers for every branch and every year — plus dummy question
-            papers. Download only the questions to test yourself, or the answer version to study from.
+            Engineering, BCA, BCS, MCA and MCS — 20+ exam-ready questions per subject with deep model answers,
+            semester-wise and branch-wise, matched to every Maharashtra university pattern including SPPU, DBATU,
+            Mumbai, Shivaji and RTMNU. Download questions only, questions with answers, or an IMP & model paper.
           </p>
         </motion.div>
 
@@ -88,14 +113,36 @@ const ExamPrep = () => {
 
       {!query && (
         <section className="container mx-auto px-4 pb-4">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Choose your stream</p>
+          <div className="flex gap-2 mb-5">
+            {streams.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => {
+                  setStream(s.id);
+                  const first = branches.find((b) => (b.stream ?? "engineering") === s.id);
+                  if (first) setBranch(first.id);
+                  setYear(null);
+                  setSem(null);
+                }}
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold border transition-all ${
+                  stream === s.id ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-muted-foreground"
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
           <p className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Choose your branch</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
-            {branches.map((b) => (
+            {streamBranches.map((b) => (
               <button
                 key={b.id}
                 onClick={() => {
                   setBranch(b.id);
                   setYear(null);
+                  setSem(null);
                 }}
                 className={`text-left p-3 rounded-xl border transition-all ${
                   branch === b.id
@@ -111,9 +158,12 @@ const ExamPrep = () => {
 
           <div className="flex flex-wrap gap-2 mt-4">
             <button
-              onClick={() => setYear(null)}
+              onClick={() => {
+                setYear(null);
+                setSem(null);
+              }}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${
-                year === null ? "border-primary bg-primary/10" : "border-border bg-card text-muted-foreground"
+                year === null && sem === null ? "border-primary bg-primary/10" : "border-border bg-card text-muted-foreground"
               }`}
             >
               All years
@@ -121,12 +171,33 @@ const ExamPrep = () => {
             {availableYears.map((y) => (
               <button
                 key={y}
-                onClick={() => setYear(y)}
+                onClick={() => {
+                  setYear(y);
+                  setSem(null);
+                }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${
-                  year === y ? "border-primary bg-primary/10" : "border-border bg-card text-muted-foreground"
+                  year === y && sem === null ? "border-primary bg-primary/10" : "border-border bg-card text-muted-foreground"
                 }`}
               >
                 Year {y}
+              </button>
+            ))}
+          </div>
+
+          <p className="text-xs uppercase tracking-widest text-muted-foreground mt-5 mb-2">Or pick a semester</p>
+          <div className="flex flex-wrap gap-2">
+            {availableSems.map((s) => (
+              <button
+                key={s}
+                onClick={() => {
+                  setSem(s);
+                  setYear(null);
+                }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border ${
+                  sem === s ? "border-primary bg-primary/10" : "border-border bg-card text-muted-foreground"
+                }`}
+              >
+                Sem {s}
               </button>
             ))}
           </div>
@@ -149,7 +220,7 @@ const ExamPrep = () => {
               >
                 <div className="flex items-center justify-between gap-2 mb-1.5">
                   <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                    Year {s.year} · Sem {s.sem}
+                    Year {s.year} · Sem {(s.year - 1) * 2 + s.sem}
                   </span>
                   <FileText className="w-4 h-4 text-primary" />
                 </div>
