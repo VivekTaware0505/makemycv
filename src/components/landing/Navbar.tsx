@@ -16,6 +16,7 @@ const Navbar = () => {
     { label: "ATS Checker", action: () => navigate("/ats-checker") },
     { label: "Interview Prep", action: () => navigate("/interview-prep") },
     { label: "Converter", action: () => navigate("/converter") },
+    { label: "Feedback", action: () => navigate("/feedback") },
   ];
 
   return (
