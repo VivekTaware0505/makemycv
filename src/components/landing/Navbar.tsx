@@ -10,7 +10,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
-    { label: "Journey", action: () => navigate("/journey") },
+    { label: "Hiring Journey", action: () => navigate("/journey") },
     { label: "Exam Prep", action: () => navigate("/exam-prep") },
     { label: "Templates", action: () => navigate("/templates") },
     { label: "ATS Checker", action: () => navigate("/ats-checker") },

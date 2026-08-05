@@ -1,21 +1,30 @@
 import { branchSubjects } from "./branchSubjects";
 import { firstYearSubjects } from "./firstYear";
-import { compAppFoundationSubjects } from "./compAppFoundation";
-import { compAppCoreSubjects } from "./compAppCore";
-import { compAppProgrammingSubjects } from "./compAppProgramming";
-import { compAppAdvancedSubjects } from "./compAppAdvanced";
+import { firstYearCatalog } from "./catalogFirstYear";
+import { computerCatalog } from "./catalogComputer";
+import { coreCatalog } from "./catalogCore";
+import { compAppCatalog } from "./catalogCompApp";
 import { BranchId, Subject } from "./types";
 
 export * from "./types";
 
-export const allSubjects: Subject[] = [
-  ...firstYearSubjects,
-  ...branchSubjects,
-  ...compAppFoundationSubjects,
-  ...compAppCoreSubjects,
-  ...compAppProgrammingSubjects,
-  ...compAppAdvancedSubjects,
-];
+const curated: Subject[] = [...firstYearSubjects, ...branchSubjects];
+
+const key = (s: Subject) => `${s.branches[0]}|${s.year}|${s.sem}|${s.name.toLowerCase()}`;
+const curatedKeys = new Set(curated.map(key));
+const curatedNames = new Set(curated.map((s) => `${s.branches.join(",")}|${s.name.toLowerCase()}`));
+
+const catalog: Subject[] = [
+  ...firstYearCatalog,
+  ...computerCatalog,
+  ...coreCatalog,
+  ...compAppCatalog,
+].filter((s) => !curatedKeys.has(key(s)) && !curatedNames.has(`${s.branches.join(",")}|${s.name.toLowerCase()}`));
+
+export const allSubjects: Subject[] = [...curated, ...catalog];
+
+/** Target number of questions every subject PDF should contain. */
+export const TARGET_QUESTIONS = 21;
 
 export function subjectsFor(branch: BranchId, year?: number) {
   return allSubjects.filter((s) => s.branches.includes(branch) && (!year || s.year === year));

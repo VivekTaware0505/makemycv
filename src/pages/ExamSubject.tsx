@@ -1,12 +1,12 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Download, FileQuestion, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { ExamQuestion, getSubject, universities } from "@/data/exam";
+import { ExamQuestion, TARGET_QUESTIONS, getSubject, universities } from "@/data/exam";
 import { downloadExamPdf } from "@/lib/examPdf";
+import { generateQuestions, loadCached, saveCached } from "@/lib/examBank";
 
 const ExamSubject = () => {
   const { subjectId } = useParams();
@@ -18,6 +18,59 @@ const ExamSubject = () => {
   const [extra, setExtra] = useState<ExamQuestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
+  const [building, setBuilding] = useState(false);
+  const startedRef = useRef<string | null>(null);
+
+  const questions = useMemo(
+    () => (subject ? [...subject.questions, ...extra] : []),
+    [subject, extra],
+  );
+  const university = universities.find((u) => u.id === uni)!;
+
+  /** Load cache and top the bank up to 21 questions on first visit. */
+  const build = useCallback(async () => {
+    if (!subject) return;
+    const cached = loadCached(subject.id);
+    let pool = [...subject.questions, ...cached];
+    if (cached.length) setExtra(cached);
+    if (pool.length >= TARGET_QUESTIONS) return;
+
+    setBuilding(true);
+    const added: ExamQuestion[] = [...cached];
+    try {
+      let guard = 0;
+      while (pool.length < TARGET_QUESTIONS && guard < 5) {
+        guard += 1;
+        const need = Math.min(7, TARGET_QUESTIONS - pool.length);
+        const incoming = await generateQuestions(
+          subject,
+          `${university.name} — ${university.pattern}`,
+          pool.map((q) => q.q),
+          need,
+        );
+        if (!incoming.length) break;
+        added.push(...incoming);
+        pool = [...subject.questions, ...added];
+        setExtra([...added]);
+        saveCached(subject.id, added);
+      }
+    } catch (err) {
+      toast({
+        title: "Could not load all questions",
+        description: (err as Error).message,
+        variant: "destructive",
+      });
+    } finally {
+      setBuilding(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subject]);
+
+  useEffect(() => {
+    if (!subject || startedRef.current === subject.id) return;
+    startedRef.current = subject.id;
+    void build();
+  }, [subject, build]);
 
   if (!subject) {
     return (
@@ -27,9 +80,6 @@ const ExamSubject = () => {
       </div>
     );
   }
-
-  const questions = [...subject.questions, ...extra];
-  const university = universities.find((u) => u.id === uni)!;
 
   const handleDownload = async (kind: "questions" | "answers" | "model") => {
     setBusy(kind);
@@ -52,22 +102,18 @@ const ExamSubject = () => {
   const generateMore = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("career-ai", {
-        body: {
-          task: "exam-answer",
-          branch: subject.branches[0],
-          year: subject.year,
-          subject: subject.name,
-          university: university.name,
-          existing: questions.map((q) => q.q),
-          count: 5,
-        },
-      });
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      const incoming: ExamQuestion[] = Array.isArray(data?.questions) ? data.questions : [];
+      const incoming = await generateQuestions(
+        subject,
+        `${university.name} — ${university.pattern}`,
+        questions.map((q) => q.q),
+        5,
+      );
       if (!incoming.length) throw new Error("No questions returned");
-      setExtra((prev) => [...prev, ...incoming]);
+      setExtra((prev) => {
+        const next = [...prev, ...incoming];
+        saveCached(subject.id, next);
+        return next;
+      });
       toast({ title: `${incoming.length} more questions added`, description: "They are included in your PDF downloads." });
     } catch (err) {
       toast({
@@ -118,6 +164,11 @@ const ExamSubject = () => {
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
+          <p className="text-[11px] font-semibold text-muted-foreground">
+            {building
+              ? `Preparing ${TARGET_QUESTIONS} important questions with model answers…`
+              : `${questions.length} important questions ready with deep model answers`}
+          </p>
           <div>
             <label className="text-xs font-semibold text-muted-foreground">University paper pattern</label>
             <select
@@ -137,7 +188,7 @@ const ExamSubject = () => {
           <div className="grid sm:grid-cols-3 gap-2">
             <Button
               className="h-12 rounded-xl font-semibold"
-              disabled={busy !== null}
+              disabled={busy !== null || building}
               onClick={() => handleDownload("answers")}
             >
               {busy === "answers" ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
@@ -146,7 +197,7 @@ const ExamSubject = () => {
             <Button
               variant="outline"
               className="h-12 rounded-xl font-semibold"
-              disabled={busy !== null}
+              disabled={busy !== null || building}
               onClick={() => handleDownload("questions")}
             >
               {busy === "questions" ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileQuestion className="w-4 h-4 mr-2" />}
@@ -155,7 +206,7 @@ const ExamSubject = () => {
             <Button
               variant="outline"
               className="h-12 rounded-xl font-semibold"
-              disabled={busy !== null}
+              disabled={busy !== null || building}
               onClick={() => handleDownload("model")}
             >
               {busy === "model" ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
@@ -166,6 +217,16 @@ const ExamSubject = () => {
       </section>
 
       <section className="container mx-auto px-4 space-y-3">
+        {building && !questions.length && (
+          <div className="rounded-2xl border border-dashed border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            <p className="text-sm font-semibold">Building your question bank</p>
+            <p className="text-xs text-muted-foreground max-w-sm">
+              We are preparing {TARGET_QUESTIONS} university-pattern questions with detailed answers for{" "}
+              {subject.name}. This takes a few seconds the first time.
+            </p>
+          </div>
+        )}
         {questions.map((q, i) => (
           <div key={`${q.q}-${i}`} className="rounded-2xl border border-border bg-card overflow-hidden">
             <button
@@ -205,9 +266,9 @@ const ExamSubject = () => {
           variant="outline"
           className="w-full h-12 rounded-xl font-semibold border-dashed"
           onClick={generateMore}
-          disabled={loading}
+          disabled={loading || building}
         >
-          {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2 text-primary" />}
+          {loading || building ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2 text-primary" />}
           Generate 5 more questions with answers
         </Button>
       </section>

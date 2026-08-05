@@ -6,7 +6,7 @@ const items = [
   { path: "/exam-prep", label: "Exams", icon: BookOpen },
   { path: "/builder", label: "Build", icon: FileCheck, primary: true },
   { path: "/interview-prep", label: "Interview", icon: Sparkles },
-  { path: "/journey", label: "Journey", icon: RouteIcon },
+  { path: "/journey", label: "Hiring", icon: RouteIcon },
 ];
 
 const MobileBottomNav = () => {

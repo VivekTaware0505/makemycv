@@ -54,7 +54,7 @@ const prompts: Record<Task, { system: string; user: (p: any) => string }> = {
   "exam-answer": {
     system:
       "You are a university professor writing exam-ready model answers for engineering students. Answers must be exam-scoring: definition, explanation, key points, and where useful a small example. Return STRICT JSON only.",
-    user: (p) => `Branch: ${p.branch}\nYear: ${p.year}\nSubject: ${p.subject}\nUniversity pattern: ${p.university || "generic"}\nExisting questions to AVOID repeating:\n${(p.existing || []).slice(0, 30).join("\n") || "(none)"}\n\nGenerate ${p.count || 5} important exam questions likely to be asked, each with a full model answer.\nReturn JSON: { "questions": [ { "q": "...", "marks": 5, "topic": "...", "a": "detailed model answer, 120-220 words, use \\n for line breaks and '-' for point lists" } ] }`,
+    user: (p) => `Branch: ${p.branch}\nYear: ${p.year}\nSemester: ${p.sem || "(unspecified)"}\nSubject: ${p.subject}${p.code ? ` (code ${p.code})` : ""}\nSyllabus units: ${(p.units || []).join(" | ") || "(standard syllabus)"}\nUniversity pattern: ${p.university || "generic"}\nExisting questions to AVOID repeating:\n${(p.existing || []).slice(0, 40).join("\n") || "(none)"}\n\nGenerate ${p.count || 5} important university exam questions for this exact subject, spread across the syllabus units above and weighted towards repeatedly asked topics. Each needs a deep, exam-scoring model answer (definition, explanation, key points, a worked example or diagram description where useful).\nReturn JSON: { "questions": [ { "q": "...", "marks": 5, "topic": "one of the units", "repeats": 3, "a": "detailed model answer, 150-260 words, use \\n for line breaks and '-' for point lists" } ] }`,
   },
 };
 
