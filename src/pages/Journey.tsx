@@ -29,7 +29,7 @@ const Journey = () => {
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Home</span>
           </Button>
-          <span className="text-sm font-semibold">Your Journey</span>
+          <span className="text-sm font-semibold">Hiring Journey</span>
         </div>
       </header>
 
