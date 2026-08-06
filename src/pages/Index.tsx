@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import Stats from "@/components/landing/Stats";
+import ExamSpotlight from "@/components/landing/ExamSpotlight";
 import TrustBadges from "@/components/landing/TrustBadges";
 import Features from "@/components/landing/Features";
 import ConverterTools from "@/components/landing/ConverterTools";
@@ -22,6 +23,7 @@ const Index = () => (
     <Navbar />
     <Hero />
     <Stats />
+    <ExamSpotlight />
     <TrustBadges />
     <Features />
     <ConverterTools />
