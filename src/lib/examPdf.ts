@@ -105,3 +105,77 @@ export async function downloadExamPdf(options: Options) {
     document.body.removeChild(holder);
   }
 }
+
+interface Note {
+  unit: string;
+  summary?: string;
+  body: string;
+  keyTerms?: string[];
+  mustRead?: string[];
+}
+
+function notesHtml(subject: Subject, notes: Note[], university?: string) {
+  const body = notes
+    .map(
+      (n, i) => `<div class="q-block">
+        <p class="q"><span class="num">Unit ${i + 1}.</span> ${escape(n.unit)}</p>
+        ${n.summary ? `<p class="meta">${escape(n.summary)}</p>` : ""}
+        <div class="answer">${answerHtml(n.body)}</div>
+        ${n.keyTerms?.length ? `<p class="units"><strong>Key terms:</strong> ${n.keyTerms.map(escape).join(" · ")}</p>` : ""}
+        ${n.mustRead?.length ? `<p class="units"><strong>Must read for exam:</strong> ${n.mustRead.map(escape).join(" · ")}</p>` : ""}
+      </div>`,
+    )
+    .join("");
+
+  return `<div class="doc">
+    <div class="head">
+      <div class="brand">MakeMyCV · Exam Prep Notes</div>
+      <h1>${escape(subject.name)}</h1>
+      <p class="sub">Deep Study Notes — Year ${subject.year}, Semester ${(subject.year - 1) * 2 + subject.sem}${
+    subject.code ? ` · Code ${escape(subject.code)}` : ""
+  }</p>
+      ${university ? `<p class="sub">${escape(university)}</p>` : ""}
+    </div>
+    ${body}
+    <p class="foot">Prepared with makemycv.co.in — free study material for students.</p>
+  </div>
+  <style>
+    .doc { font-family: Georgia, 'Times New Roman', serif; color: #16181d; padding: 34px 40px; background: #fff; }
+    .head { border-bottom: 2px solid #16181d; padding-bottom: 12px; margin-bottom: 18px; }
+    .brand { font-family: Arial, sans-serif; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #4b5563; }
+    .head h1 { font-size: 22px; margin: 6px 0 4px; }
+    .sub { font-size: 12px; color: #374151; margin: 2px 0; }
+    .units { font-size: 11px; color: #4b5563; margin-top: 6px; }
+    .q-block { page-break-inside: avoid; margin-bottom: 18px; }
+    .q { font-size: 14px; font-weight: 700; line-height: 1.45; margin: 0; }
+    .num { margin-right: 6px; }
+    .meta { font-family: Arial, sans-serif; font-size: 11px; color: #6b7280; margin: 3px 0 6px; }
+    .answer { border-left: 3px solid #2563eb; padding-left: 12px; }
+    .ans, .pt { font-size: 12px; line-height: 1.6; margin: 0 0 4px; color: #1f2937; }
+    .pt { padding-left: 10px; }
+    .foot { font-family: Arial, sans-serif; font-size: 10px; color: #6b7280; text-align: center; margin-top: 20px; }
+  </style>`;
+}
+
+export async function downloadNotesPdf(subject: Subject, notes: Note[], university?: string) {
+  const html2pdf = (await import("html2pdf.js")).default;
+  const holder = document.createElement("div");
+  holder.style.cssText = "position:fixed;top:0;left:-10000px;width:794px;background:#fff;z-index:-1;";
+  holder.innerHTML = notesHtml(subject, notes, university);
+  document.body.appendChild(holder);
+  try {
+    await html2pdf()
+      .set({
+        margin: [10, 0, 12, 0],
+        filename: `${subject.id}-notes.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", windowWidth: 794 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["css", "legacy"], avoid: [".q-block"] },
+      } as never)
+      .from(holder.firstElementChild as HTMLElement)
+      .save();
+  } finally {
+    document.body.removeChild(holder);
+  }
+}
