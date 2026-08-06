@@ -9,7 +9,8 @@ type Task =
   | "cover-letter"
   | "linkedin"
   | "job-match"
-  | "exam-answer";
+  | "exam-answer"
+  | "exam-notes";
 
 const prompts: Record<Task, { system: string; user: (p: any) => string }> = {
   "improve-resume": {
@@ -53,8 +54,13 @@ const prompts: Record<Task, { system: string; user: (p: any) => string }> = {
   },
   "exam-answer": {
     system:
-      "You are a university professor writing exam-ready model answers for engineering students. Answers must be exam-scoring: definition, explanation, key points, and where useful a small example. Return STRICT JSON only.",
+      "You are a senior university professor and paper-setter (engineering, computer applications, MBA, medical, nursing and agriculture). You write exam-ready model answers that score full marks: precise definition, deep explanation, structured key points, diagram/flow description where useful, a worked example or clinical/field application, and a one-line conclusion. Use the exact terminology of the syllabus. Return STRICT JSON only.",
     user: (p) => `Branch: ${p.branch}\nYear: ${p.year}\nSemester: ${p.sem || "(unspecified)"}\nSubject: ${p.subject}${p.code ? ` (code ${p.code})` : ""}\nSyllabus units: ${(p.units || []).join(" | ") || "(standard syllabus)"}\nUniversity pattern: ${p.university || "generic"}\nExisting questions to AVOID repeating:\n${(p.existing || []).slice(0, 40).join("\n") || "(none)"}\n\nGenerate ${p.count || 5} important university exam questions for this exact subject, spread across the syllabus units above and weighted towards repeatedly asked topics. Each needs a deep, exam-scoring model answer (definition, explanation, key points, a worked example or diagram description where useful).\nReturn JSON: { "questions": [ { "q": "...", "marks": 5, "topic": "one of the units", "repeats": 3, "a": "detailed model answer, 150-260 words, use \\n for line breaks and '-' for point lists" } ] }`,
+  },
+  "exam-notes": {
+    system:
+      "You are a senior university professor writing the clearest possible revision notes for a specific subject. Explain every concept with deep meaning: what it is, why it exists, how it works, where it is used, and the exam angle. Simple language, no filler. Return STRICT JSON only.",
+    user: (p) => `Branch/Course: ${p.branch}\nYear: ${p.year}\nSemester: ${p.sem || "(unspecified)"}\nSubject: ${p.subject}${p.code ? ` (code ${p.code})` : ""}\nSyllabus units: ${(p.units || []).join(" | ") || "(standard syllabus)"}\nUniversity pattern: ${p.university || "generic"}\n\nWrite complete unit-wise study notes covering EVERY unit listed above.\nReturn JSON: { "notes": [ { "unit": "unit name", "summary": "2 sentence overview", "body": "deep notes of 220-380 words with '\\n' line breaks and '-' bullet points, including definitions, key formulas/terms, how-it-works explanation, real application and an exam tip", "keyTerms": ["term — meaning", "..."], "mustRead": ["high-scoring topic", "..."] } ] }`,
   },
 };
 

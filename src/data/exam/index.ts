@@ -4,7 +4,8 @@ import { firstYearCatalog } from "./catalogFirstYear";
 import { computerCatalog } from "./catalogComputer";
 import { coreCatalog } from "./catalogCore";
 import { compAppCatalog } from "./catalogCompApp";
-import { BranchId, Subject } from "./types";
+import { professionalCatalog } from "./catalogProfessional";
+import { BranchId, Subject, StreamId, branches as allBranches } from "./types";
 
 export * from "./types";
 
@@ -19,6 +20,7 @@ const catalog: Subject[] = [
   ...computerCatalog,
   ...coreCatalog,
   ...compAppCatalog,
+  ...professionalCatalog,
 ].filter((s) => !curatedKeys.has(key(s)) && !curatedNames.has(`${s.branches.join(",")}|${s.name.toLowerCase()}`));
 
 export const allSubjects: Subject[] = [...curated, ...catalog];
@@ -48,6 +50,15 @@ export function yearsFor(branch: BranchId) {
 
 export function getSubject(id: string) {
   return allSubjects.find((s) => s.id === id);
+}
+
+/** Stream a branch belongs to (defaults to engineering). */
+export function streamOf(branch: BranchId): StreamId {
+  return allBranches.find((b) => b.id === branch)?.stream ?? "engineering";
+}
+
+export function branchesForStream(stream: StreamId) {
+  return allBranches.filter((b) => (b.stream ?? "engineering") === stream);
 }
 
 export function searchSubjects(query: string) {

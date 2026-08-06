@@ -48,3 +48,50 @@ export async function generateQuestions(
 }
 
 export const targetCount = TARGET_QUESTIONS;
+
+export interface SubjectNote {
+  unit: string;
+  summary?: string;
+  body: string;
+  keyTerms?: string[];
+  mustRead?: string[];
+}
+
+const notesKey = (id: string) => `mmcv:notes:${id}`;
+
+export function loadCachedNotes(id: string): SubjectNote[] {
+  try {
+    const raw = localStorage.getItem(notesKey(id));
+    return raw ? (JSON.parse(raw) as SubjectNote[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveCachedNotes(id: string, notes: SubjectNote[]) {
+  try {
+    localStorage.setItem(notesKey(id), JSON.stringify(notes));
+  } catch {
+    /* storage unavailable */
+  }
+}
+
+/** Deep, unit-wise study notes for a subject. */
+export async function generateNotes(subject: Subject, university: string): Promise<SubjectNote[]> {
+  const { data, error } = await supabase.functions.invoke("career-ai", {
+    body: {
+      task: "exam-notes",
+      branch: subject.branches[0],
+      year: subject.year,
+      sem: (subject.year - 1) * 2 + subject.sem,
+      subject: subject.name,
+      code: subject.code,
+      units: subject.units,
+      university,
+    },
+  });
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+  const notes: SubjectNote[] = Array.isArray(data?.notes) ? data.notes : [];
+  return notes.filter((n) => n?.unit && n?.body);
+}

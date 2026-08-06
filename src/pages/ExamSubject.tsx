@@ -1,19 +1,32 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Download, FileQuestion, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, BookOpen, Download, FileQuestion, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { ExamQuestion, TARGET_QUESTIONS, getSubject, universities } from "@/data/exam";
-import { downloadExamPdf } from "@/lib/examPdf";
-import { generateQuestions, loadCached, saveCached } from "@/lib/examBank";
+import { ExamQuestion, TARGET_QUESTIONS, getSubject, streamOf, universities } from "@/data/exam";
+import { StreamBackdrop } from "@/data/exam/streamMedia";
+import { downloadExamPdf, downloadNotesPdf } from "@/lib/examPdf";
+import {
+  SubjectNote,
+  generateNotes,
+  generateQuestions,
+  loadCached,
+  loadCachedNotes,
+  saveCached,
+  saveCachedNotes,
+} from "@/lib/examBank";
+import { getSavedUniversity, saveUniversity } from "@/lib/examPrefs";
 
 const ExamSubject = () => {
   const { subjectId } = useParams();
   const navigate = useNavigate();
   const subject = useMemo(() => getSubject(subjectId || ""), [subjectId]);
 
-  const [uni, setUni] = useState(universities[0].id);
+  const [uni, setUni] = useState(getSavedUniversity() ?? universities[0].id);
+  const [tab, setTab] = useState<"questions" | "notes">("questions");
+  const [notes, setNotes] = useState<SubjectNote[]>([]);
+  const [notesLoading, setNotesLoading] = useState(false);
   const [open, setOpen] = useState<number | null>(0);
   const [extra, setExtra] = useState<ExamQuestion[]>([]);
   const [loading, setLoading] = useState(false);
@@ -71,6 +84,29 @@ const ExamSubject = () => {
     startedRef.current = subject.id;
     void build();
   }, [subject, build]);
+
+  useEffect(() => {
+    if (subject) setNotes(loadCachedNotes(subject.id));
+  }, [subject]);
+
+  const buildNotes = async () => {
+    if (!subject) return;
+    setNotesLoading(true);
+    try {
+      const incoming = await generateNotes(subject, `${university.name} — ${university.pattern}`);
+      if (!incoming.length) throw new Error("No notes returned");
+      setNotes(incoming);
+      saveCachedNotes(subject.id, incoming);
+    } catch (err) {
+      toast({
+        title: "Could not prepare notes",
+        description: (err as Error).message,
+        variant: "destructive",
+      });
+    } finally {
+      setNotesLoading(false);
+    }
+  };
 
   if (!subject) {
     return (
@@ -149,13 +185,14 @@ const ExamSubject = () => {
         </div>
       </header>
 
-      <section className="container mx-auto px-4 py-6">
-        <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
+      <section className="relative overflow-hidden container mx-auto px-4 py-6">
+        <StreamBackdrop stream={streamOf(subject.branches[0])} />
+        <p className="relative text-[11px] uppercase tracking-widest text-muted-foreground">
           Year {subject.year} · Semester {(subject.year - 1) * 2 + subject.sem} (Sem {subject.sem} of the year)
           {subject.code ? ` · ${subject.code}` : ""}
         </p>
-        <h1 className="font-display uppercase text-2xl sm:text-4xl leading-tight mt-2 mb-3">{subject.name}</h1>
-        <div className="flex flex-wrap gap-1.5 mb-5">
+        <h1 className="relative font-display uppercase text-2xl sm:text-4xl leading-tight mt-2 mb-3">{subject.name}</h1>
+        <div className="relative flex flex-wrap gap-1.5 mb-5">
           {subject.units.map((u) => (
             <span key={u} className="px-2.5 py-1 rounded-full bg-secondary text-[11px] font-medium">
               {u}
@@ -163,7 +200,7 @@ const ExamSubject = () => {
           ))}
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
+        <div className="relative rounded-2xl border border-border bg-card p-4 space-y-3">
           <p className="text-[11px] font-semibold text-muted-foreground">
             {building
               ? `Preparing ${TARGET_QUESTIONS} important questions with model answers…`
@@ -173,7 +210,10 @@ const ExamSubject = () => {
             <label className="text-xs font-semibold text-muted-foreground">University paper pattern</label>
             <select
               value={uni}
-              onChange={(e) => setUni(e.target.value)}
+              onChange={(e) => {
+                setUni(e.target.value);
+                saveUniversity(e.target.value);
+              }}
               className="mt-1.5 w-full h-11 rounded-xl bg-background border border-border px-3 text-sm"
             >
               {universities.map((u) => (
@@ -213,10 +253,99 @@ const ExamSubject = () => {
               IMP & Model Paper
             </Button>
           </div>
+
+          <Button
+            variant="outline"
+            className="w-full h-12 rounded-xl font-semibold"
+            disabled={notesLoading || !notes.length}
+            onClick={async () => {
+              try {
+                await downloadNotesPdf(subject, notes, `${university.name} — ${university.pattern}`);
+                toast({ title: "Notes PDF downloaded" });
+              } catch {
+                toast({ title: "Download failed", variant: "destructive" });
+              }
+            }}
+          >
+            <BookOpen className="w-4 h-4 mr-2 text-primary" />
+            {notes.length ? "Download deep notes PDF" : "Open Notes tab to prepare notes"}
+          </Button>
         </div>
       </section>
 
-      <section className="container mx-auto px-4 space-y-3">
+      <section className="container mx-auto px-4">
+        <div className="inline-flex p-1 rounded-xl border border-border bg-card">
+          {(["questions", "notes"] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-4 py-2 rounded-lg text-xs font-bold capitalize transition-colors ${
+                tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+              }`}
+            >
+              {t === "questions" ? "Important questions" : "Subject notes"}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {tab === "notes" && (
+        <section className="container mx-auto px-4 py-4 space-y-3">
+          {!notes.length && !notesLoading && (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-8 text-center space-y-3">
+              <p className="text-sm font-semibold">Deep unit-wise notes for {subject.name}</p>
+              <p className="text-xs text-muted-foreground max-w-md mx-auto">
+                Every unit explained with meaning, key terms, real applications and exam tips — matched to the{" "}
+                {university.short} pattern.
+              </p>
+              <Button className="h-11 rounded-xl font-semibold" onClick={buildNotes}>
+                <Sparkles className="w-4 h-4 mr-2" /> Prepare my notes
+              </Button>
+            </div>
+          )}
+          {notesLoading && (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              <p className="text-sm font-semibold">Writing your notes unit by unit…</p>
+            </div>
+          )}
+          {notes.map((n, i) => (
+            <div key={`${n.unit}-${i}`} className="rounded-2xl border border-border bg-card p-4">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold">Unit {i + 1}</p>
+              <h3 className="font-semibold mt-1">{n.unit}</h3>
+              {n.summary && <p className="text-xs text-muted-foreground mt-1.5">{n.summary}</p>}
+              <div className="mt-3">
+                {n.body
+                  .split("\n")
+                  .map((l) => l.trim())
+                  .filter(Boolean)
+                  .map((line, j) => (
+                    <p
+                      key={j}
+                      className={`text-sm leading-relaxed text-muted-foreground mb-1.5 ${line.startsWith("-") ? "pl-3" : ""}`}
+                    >
+                      {line.startsWith("-") ? `• ${line.slice(1).trim()}` : line}
+                    </p>
+                  ))}
+              </div>
+              {!!n.keyTerms?.length && (
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {n.keyTerms.map((k) => (
+                    <span key={k} className="px-2.5 py-1 rounded-full bg-secondary text-[11px]">
+                      {k}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {!!n.mustRead?.length && (
+                <p className="text-[11px] text-primary font-medium mt-3">Must read: {n.mustRead.join(" · ")}</p>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
+
+      <section className={`container mx-auto px-4 py-4 space-y-3 ${tab === "questions" ? "" : "hidden"}`}>
         {building && !questions.length && (
           <div className="rounded-2xl border border-dashed border-border bg-card p-8 flex flex-col items-center gap-3 text-center">
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
