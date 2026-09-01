@@ -1,8 +1,20 @@
+import type { EducationLevel } from "@/data/indianEducation";
+
 export interface Education {
   id: string;
   degree: string;
   institution: string;
   year: string;
+  level?: EducationLevel;
+  qualification?: string;
+  specialization?: string;
+  university?: string;
+  cityState?: string;
+  startDate?: string;
+  endDate?: string;
+  score?: string;
+  currentlyStudying?: boolean;
+  achievements?: string;
 }
 
 export interface Experience {
