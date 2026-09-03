@@ -1,1 +1,4 @@
-# Roadmap
+- [ ] Complete education streams, university-first semester/year subject selection, and fast study downloads
+- [ ] Standardize Smart A4 preview/export margins, alignment, and page breaks
+- [ ] Complete Hiring Journey steps and actions
+- [ ] Polish affected UI and verify build/preview
