@@ -267,7 +267,7 @@ const ResumePreview = ({ data, template }: Props) => {
 
   // Default single-column layout
   return (
-    <div id="resume-preview" className="relative bg-white min-h-[800px] font-sans text-sm" style={{ fontFamily: config.fontFamily, color: '#1a1a1a' }}>
+    <div id="resume-preview" className="relative bg-white font-sans text-sm" style={{ fontFamily: config.fontFamily, color: '#1a1a1a', width: "100%", aspectRatio: "794 / 1123", boxSizing: "border-box" }}>
       {/* Header */}
       {config.headerStyle === "banner" ? (
         <div className="p-8 pb-6" style={{ background: config.headerBg, color: '#fff' }}>
@@ -332,7 +332,7 @@ const ResumePreview = ({ data, template }: Props) => {
         </div>
       )}
 
-      <div className={config.headerStyle === "banner" ? "p-8 pt-6" : "p-8 pt-5"}>
+      <div className={config.headerStyle === "banner" ? "p-8 pt-6" : "p-8 pt-5"} style={{ minHeight: 0, boxSizing: "border-box" }}>
         {/* Skills */}
         {skills.length > 0 && (
           <div className="rp-block mb-6">
@@ -407,7 +407,8 @@ const ResumePreview = ({ data, template }: Props) => {
                   <span className="font-semibold text-xs">{edu.degree}</span>
                   <span className="text-xs" style={{ color: '#888' }}>{edu.year}</span>
                 </div>
-                <p className="text-xs" style={{ color: '#666' }}>{edu.institution}</p>
+                <p className="text-xs" style={{ color: '#666' }}>{[edu.institution, edu.university, edu.cityState].filter(Boolean).join(" · ")}</p>
+                {(edu.specialization || edu.score || edu.achievements) && <p className="text-[11px] mt-0.5" style={{ color: '#777' }}>{[edu.specialization, edu.score, edu.achievements].filter(Boolean).join(" · ")}</p>}
               </div>
             ))}
           </div>
