@@ -92,12 +92,12 @@ export async function downloadExamPdf(options: Options) {
   try {
     await html2pdf()
       .set({
-        margin: [10, 0, 12, 0],
+        margin: [8, 10, 10, 10],
         filename: `${options.subject.id}-${suffix}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", windowWidth: 794 },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ["css", "legacy"], avoid: [".q-block"] },
+        pagebreak: { mode: ["css", "legacy"], avoid: [".q-block", ".head"] },
       } as never)
       .from(holder.firstElementChild as HTMLElement)
       .save();
@@ -166,12 +166,12 @@ export async function downloadNotesPdf(subject: Subject, notes: Note[], universi
   try {
     await html2pdf()
       .set({
-        margin: [10, 0, 12, 0],
+        margin: [8, 10, 10, 10],
         filename: `${subject.id}-notes.pdf`,
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", windowWidth: 794 },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ["css", "legacy"], avoid: [".q-block"] },
+        pagebreak: { mode: ["css", "legacy"], avoid: [".q-block", ".head"] },
       } as never)
       .from(holder.firstElementChild as HTMLElement)
       .save();

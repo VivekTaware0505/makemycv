@@ -36,7 +36,10 @@ const Builder = () => {
       const clone = element.cloneNode(true) as HTMLElement;
       clone.removeAttribute("id");
       clone.style.width = "794px";
+      clone.style.height = "auto";
       clone.style.minHeight = "1123px";
+      clone.style.aspectRatio = "794 / 1123";
+      clone.style.overflow = "visible";
       clone.style.margin = "0";
       clone.style.background = "#ffffff";
       clone.style.boxShadow = "none";

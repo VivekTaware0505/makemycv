@@ -8,6 +8,7 @@ import { Plus, Trash2, Linkedin, Globe, FolderKanban, Award, Camera, Briefcase }
 import { Sparkles, Eraser, Lightbulb } from "lucide-react";
 import { getSampleResume } from "@/lib/sampleResumes";
 import { defaultResumeData } from "@/types/resume";
+import { educationLevels, institutionSuggestions, qualificationOptions } from "@/data/indianEducation";
 
 interface Props {
   data: ResumeData;
@@ -52,7 +53,7 @@ const ResumeForm = ({ data, onChange }: Props) => {
     if (data.education.length <= 1) return;
     onChange({ ...data, education: data.education.filter((e) => e.id !== id) });
   };
-  const updateEducation = (id: string, field: string, value: string) => {
+  const updateEducation = (id: string, field: string, value: string | boolean) => {
     onChange({ ...data, education: data.education.map((e) => (e.id === id ? { ...e, [field]: value } : e)) });
   };
 
@@ -244,11 +245,46 @@ const ResumeForm = ({ data, onChange }: Props) => {
                   <Trash2 className="w-4 h-4" />
                 </button>
               )}
-              <Input placeholder="Degree (e.g. B.Tech Computer Science)" value={edu.degree} onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)} />
-              <div className="grid grid-cols-2 gap-3">
-                <Input placeholder="Institution" value={edu.institution} onChange={(e) => updateEducation(edu.id, 'institution', e.target.value)} />
-                <Input placeholder="Year (e.g. 2020-2024)" value={edu.year} onChange={(e) => updateEducation(edu.id, 'year', e.target.value)} />
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-xs text-muted-foreground">Education level</Label>
+                  <select
+                    value={edu.level ?? "Undergraduate"}
+                    onChange={(e) => updateEducation(edu.id, "level", e.target.value)}
+                    className="mt-1 h-10 w-full rounded-lg border border-border bg-background px-3 text-sm"
+                  >
+                    {educationLevels.map((level) => <option key={level}>{level}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Degree / qualification</Label>
+                  <Input list="qualification-options" className="mt-1" placeholder="B.Tech, MBA, MBBS…" value={edu.qualification ?? edu.degree} onChange={(e) => {
+                    updateEducation(edu.id, "qualification", e.target.value);
+                    updateEducation(edu.id, "degree", e.target.value);
+                  }} />
+                </div>
               </div>
+              <datalist id="qualification-options">
+                {qualificationOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </datalist>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <Input placeholder="Specialization / branch" value={edu.specialization ?? ""} onChange={(e) => updateEducation(edu.id, "specialization", e.target.value)} />
+                <Input list="institution-options" placeholder="Institution / college" value={edu.institution} onChange={(e) => updateEducation(edu.id, "institution", e.target.value)} />
+              </div>
+              <datalist id="institution-options">
+                {institutionSuggestions.map((institution) => <option key={institution} value={institution} />)}
+              </datalist>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <Input placeholder="University / board" value={edu.university ?? ""} onChange={(e) => updateEducation(edu.id, "university", e.target.value)} />
+                <Input placeholder="City, State" value={edu.cityState ?? ""} onChange={(e) => updateEducation(edu.id, "cityState", e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div><Label className="text-xs text-muted-foreground">Start date</Label><Input className="mt-1" type="month" value={edu.startDate ?? ""} onChange={(e) => updateEducation(edu.id, "startDate", e.target.value)} /></div>
+                <div><Label className="text-xs text-muted-foreground">End / expected</Label><Input className="mt-1" type="month" value={edu.endDate ?? edu.year} onChange={(e) => { updateEducation(edu.id, "endDate", e.target.value); updateEducation(edu.id, "year", e.target.value); }} /></div>
+                <Input placeholder="CGPA / % / grade" value={edu.score ?? ""} onChange={(e) => updateEducation(edu.id, "score", e.target.value)} />
+                <label className="flex items-center gap-2 text-xs text-muted-foreground pt-6"><input type="checkbox" checked={Boolean(edu.currentlyStudying)} onChange={(e) => updateEducation(edu.id, "currentlyStudying", e.target.checked)} /> Studying now</label>
+              </div>
+              <Input placeholder="Achievements or relevant description (optional)" value={edu.achievements ?? ""} onChange={(e) => updateEducation(edu.id, "achievements", e.target.value)} />
             </div>
           ))}
         </div>
