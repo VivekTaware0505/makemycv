@@ -1,5 +1,5 @@
 - [ ] Complete education streams, university-first semester/year subject selection, and fast study downloads
 - [ ] Lock resume previews and PDF exports to the same fixed A4 canvas, margins, and page breaks
-- [ ] Build a searchable past-paper library with public PDF uploads and university/subject/year/semester filters
+- [ ] Build a searchable past-paper library with public PDF uploads, university/subject/year/semester filters, and standard government-style paper metadata
 - [ ] Complete the six Hiring Journey routes, actions, and progress tracking
 - [ ] Verify affected pages and key flows; update app metadata
