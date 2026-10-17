@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      past_papers: {
+        Row: {
+          academic_year: string | null
+          branch: string
+          created_at: string
+          duration_minutes: number
+          exam_session: string
+          exam_year: number
+          file_name: string
+          file_path: string
+          id: string
+          maximum_marks: number
+          medium: string
+          paper_type: string
+          program: string
+          semester: number
+          source_url: string | null
+          subject_code: string | null
+          subject_name: string
+          university_id: string
+          university_name: string
+          verification_status: string
+        }
+        Insert: {
+          academic_year?: string | null
+          branch: string
+          created_at?: string
+          duration_minutes: number
+          exam_session: string
+          exam_year: number
+          file_name: string
+          file_path: string
+          id?: string
+          maximum_marks: number
+          medium?: string
+          paper_type?: string
+          program: string
+          semester: number
+          source_url?: string | null
+          subject_code?: string | null
+          subject_name: string
+          university_id: string
+          university_name: string
+          verification_status?: string
+        }
+        Update: {
+          academic_year?: string | null
+          branch?: string
+          created_at?: string
+          duration_minutes?: number
+          exam_session?: string
+          exam_year?: number
+          file_name?: string
+          file_path?: string
+          id?: string
+          maximum_marks?: number
+          medium?: string
+          paper_type?: string
+          program?: string
+          semester?: number
+          source_url?: string | null
+          subject_code?: string | null
+          subject_name?: string
+          university_id?: string
+          university_name?: string
+          verification_status?: string
+        }
+        Relationships: []
+      }
       resume_downloads: {
         Row: {
           created_at: string
