@@ -11,6 +11,8 @@ import ResumeForm from "@/components/builder/ResumeForm";
 import ResumePreview from "@/components/builder/ResumePreview";
 import ATSScore from "@/components/builder/ATSScore";
 import DownloadBar from "@/components/builder/DownloadBar";
+import A4CanvasFrame from "@/components/builder/A4CanvasFrame";
+import { RESUME_A4 } from "@/lib/resumeA4";
 
 const Builder = () => {
   const navigate = useNavigate();
@@ -31,41 +33,50 @@ const Builder = () => {
 
     if (format === "pdf") {
       const html2pdf = (await import("html2pdf.js")).default;
-      // Render an off-screen clone at exact A4 width (794px @ 96dpi) so the
-      // PDF alignment matches the page instead of the on-screen preview width.
+      await document.fonts.ready;
       const clone = element.cloneNode(true) as HTMLElement;
       clone.removeAttribute("id");
-      clone.style.width = "794px";
-      clone.style.height = "auto";
-      clone.style.minHeight = "1123px";
-      clone.style.aspectRatio = "794 / 1123";
-      clone.style.overflow = "visible";
+      clone.style.width = `${RESUME_A4.width}px`;
+      clone.style.height = `${RESUME_A4.height}px`;
+      clone.style.minHeight = "0";
+      clone.style.maxHeight = `${RESUME_A4.height}px`;
+      clone.style.aspectRatio = `${RESUME_A4.width} / ${RESUME_A4.height}`;
+      clone.style.overflow = "hidden";
       clone.style.margin = "0";
       clone.style.background = "#ffffff";
       clone.style.boxShadow = "none";
       clone.style.borderRadius = "0";
+      clone.style.transform = "none";
       const holder = document.createElement("div");
       holder.style.cssText =
-        "position:fixed;top:0;left:-10000px;width:794px;background:#ffffff;z-index:-1;";
+        `position:fixed;top:0;left:-10000px;width:${RESUME_A4.width}px;height:${RESUME_A4.height}px;background:#ffffff;z-index:-1;`;
       holder.appendChild(clone);
       document.body.appendChild(holder);
       try {
+        await Promise.all(
+          Array.from(clone.querySelectorAll("img"), (image) => image.decode().catch(() => undefined)),
+        );
+        if (clone.scrollHeight > RESUME_A4.height + 1) {
+          throw new Error("This resume has more content than fits on one A4 page. Shorten a section before downloading to avoid clipped content.");
+        }
         await html2pdf()
           .set({
-            margin: 0,
+            margin: RESUME_A4.margin,
             filename: `${data.name || "resume"}.pdf`,
             image: { type: "jpeg", quality: 1 },
             html2canvas: {
               scale: 2,
               useCORS: true,
               backgroundColor: "#ffffff",
-              windowWidth: 794,
-              width: 794,
+              windowWidth: RESUME_A4.width,
+              windowHeight: RESUME_A4.height,
+              width: RESUME_A4.width,
+              height: RESUME_A4.height,
               scrollX: 0,
               scrollY: 0,
             },
-            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-            pagebreak: { mode: ["css", "legacy"], avoid: [".rp-block"] },
+            jsPDF: { unit: "mm", format: RESUME_A4.format, orientation: RESUME_A4.orientation },
+            pagebreak: { mode: ["css"], avoid: [".rp-block"] },
           } as any)
           .from(clone)
           .save();
@@ -181,9 +192,11 @@ const Builder = () => {
               key={template}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="rounded-2xl border border-border overflow-hidden shadow-lg"
+              className="w-full"
             >
-              <ResumePreview data={data} template={template} />
+              <A4CanvasFrame>
+                <ResumePreview data={data} template={template} />
+              </A4CanvasFrame>
             </motion.div>
           </div>
 
