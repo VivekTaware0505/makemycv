@@ -1,0 +1,1 @@
+- Keep resume preview and PDF geometry centralized in `src/lib/resumeA4.ts` so canvas dimensions, scaling, and export margins cannot drift.
