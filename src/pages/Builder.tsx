@@ -41,7 +41,7 @@ const Builder = () => {
       clone.style.minHeight = "0";
       clone.style.maxHeight = `${RESUME_A4.height}px`;
       clone.style.aspectRatio = `${RESUME_A4.width} / ${RESUME_A4.height}`;
-      clone.style.overflow = "hidden";
+      clone.style.overflow = "visible";
       clone.style.margin = "0";
       clone.style.background = "#ffffff";
       clone.style.boxShadow = "none";
@@ -59,6 +59,7 @@ const Builder = () => {
         if (clone.scrollHeight > RESUME_A4.height + 1) {
           throw new Error("This resume has more content than fits on one A4 page. Shorten a section before downloading to avoid clipped content.");
         }
+        clone.style.overflow = "hidden";
         await html2pdf()
           .set({
             margin: RESUME_A4.margin,
