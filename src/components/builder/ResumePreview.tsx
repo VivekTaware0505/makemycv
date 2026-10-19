@@ -1,5 +1,6 @@
 import { ResumeData, fieldLabels } from "@/types/resume";
 import { TemplateId } from "@/types/templates";
+import { RESUME_A4 } from "@/lib/resumeA4";
 
 interface Props {
   data: ResumeData;
@@ -60,7 +61,7 @@ const ResumePreview = ({ data, template }: Props) => {
       <div
         id="resume-preview"
         className="relative bg-white font-sans"
-        style={{ fontFamily: config.fontFamily, color: "#1f2933", display: "flex", flexDirection: "column", aspectRatio: "794 / 1123" }}
+        style={{ fontFamily: config.fontFamily, color: "#1f2933", display: "flex", flexDirection: "column", width: RESUME_A4.width, height: RESUME_A4.height, boxSizing: "border-box", overflow: "hidden" }}
       >
         {/* Top band: dark stub over sidebar + colored banner with photo */}
         <div style={{ display: "flex", alignItems: "stretch" }}>
@@ -267,7 +268,7 @@ const ResumePreview = ({ data, template }: Props) => {
 
   // Default single-column layout
   return (
-    <div id="resume-preview" className="relative bg-white font-sans text-sm" style={{ fontFamily: config.fontFamily, color: '#1a1a1a', width: "100%", aspectRatio: "794 / 1123", boxSizing: "border-box" }}>
+    <div id="resume-preview" className="relative bg-white font-sans text-sm" style={{ fontFamily: config.fontFamily, color: '#1a1a1a', width: RESUME_A4.width, height: RESUME_A4.height, boxSizing: "border-box", overflow: "hidden", display: "flex", flexDirection: "column" }}>
       {/* Header */}
       {config.headerStyle === "banner" ? (
         <div className="p-8 pb-6" style={{ background: config.headerBg, color: '#fff' }}>
