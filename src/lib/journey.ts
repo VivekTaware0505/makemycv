@@ -7,6 +7,9 @@ export type StageId =
   | "cover-letter"
   | "linkedin"
   | "interview"
+  | "mock-interview"
+  | "salary-negotiation"
+  | "job-search"
   | "jobs"
   | "tracker"
   | "offer";
